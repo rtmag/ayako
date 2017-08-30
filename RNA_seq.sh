@@ -116,7 +116,8 @@
 ###
 ~/myPrograms/STAR/bin/Linux_x86_64/STAR --genomeDir /root/ayako/ref/mm10_star_sjdbO100/ --genomeLoad LoadAndExit
 
-~/myPrograms/STAR/bin/Linux_x86_64/STAR --genomeDir /root/ayako/ref/mm10_star_sjdbO100/ --genomeLoad LoadAndKeep \
+~/myPrograms/STAR/bin/Linux_x86_64/STAR --genomeDir /root/ayako/ref/mm10_star_sjdbO100/ \
+--genomeLoad LoadAndKeep --limitBAMsortRAM 10000000000 \
 --readFilesCommand zcat \
 --runThreadN 40 \
 --readFilesIn /root/ayako/rna/Ctrl_CD41minus3_1.fastq.gz \
@@ -126,7 +127,8 @@
 --outFileNamePrefix /root/ayako/bam/TEST_min100_Ctrl_CD41minus3_
 
 
-~/myPrograms/STAR/bin/Linux_x86_64/STAR --genomeDir /root/ayako/ref/mm10_star_sjdbO100/ --genomeLoad LoadAndKeep \
+~/myPrograms/STAR/bin/Linux_x86_64/STAR --genomeDir /root/ayako/ref/mm10_star_sjdbO100/ \
+--genomeLoad LoadAndKeep --limitBAMsortRAM 10000000000 \
 --readFilesCommand zcat \
 --runThreadN 40 \
 --readFilesIn /root/ayako/rna/Ctrl_CD41minus3_1.fastq.gz \
@@ -136,7 +138,8 @@
 --outFileNamePrefix /root/ayako/bam/TEST_min90_Ctrl_CD41minus3_
 
 
-~/myPrograms/STAR/bin/Linux_x86_64/STAR --genomeDir /root/ayako/ref/mm10_star_sjdbO100/ --genomeLoad LoadAndKeep \
+~/myPrograms/STAR/bin/Linux_x86_64/STAR --genomeDir /root/ayako/ref/mm10_star_sjdbO100/ \
+--genomeLoad LoadAndKeep --limitBAMsortRAM 10000000000 \
 --readFilesCommand zcat \
 --runThreadN 40 \
 --readFilesIn /root/ayako/rna/Ctrl_CD41minus3_1.fastq.gz \
