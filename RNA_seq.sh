@@ -123,7 +123,7 @@
 --readFilesIn /root/ayako/rna/Ctrl_CD41minus3_1.fastq.gz \
 /root/ayako/rna/Ctrl_CD41minus3_2.fastq.gz \
 --outSAMtype BAM SortedByCoordinate \
---outFilterMatchNmin 100 \
+--outFilterScoreMinOverLread 0.5 --outFilterMatchNminOverLread 0.5 \
 --outFileNamePrefix /root/ayako/bam/TEST_min100_Ctrl_CD41minus3_
 
 
@@ -134,7 +134,7 @@
 --readFilesIn /root/ayako/rna/Ctrl_CD41minus3_1.fastq.gz \
 /root/ayako/rna/Ctrl_CD41minus3_2.fastq.gz \
 --outSAMtype BAM SortedByCoordinate \
---outFilterMatchNmin 90 \
+--outFilterScoreMinOverLread 0.45 --outFilterMatchNminOverLread 0.45 \
 --outFileNamePrefix /root/ayako/bam/TEST_min90_Ctrl_CD41minus3_
 
 
@@ -145,7 +145,7 @@
 --readFilesIn /root/ayako/rna/Ctrl_CD41minus3_1.fastq.gz \
 /root/ayako/rna/Ctrl_CD41minus3_2.fastq.gz \
 --outSAMtype BAM SortedByCoordinate \
---outFilterMatchNmin 120 \
+--outFilterScoreMinOverLread 0.55 --outFilterMatchNminOverLread 0.55 \
 --outFileNamePrefix /root/ayako/bam/TEST_min120_Ctrl_CD41minus3_
 
 ~/myPrograms/STAR/bin/Linux_x86_64/STAR --genomeDir /root/ayako/ref/mm10_star_sjdbO100/ --genomeLoad Remove
