@@ -37,11 +37,52 @@ bed_to_granges <- function(file){
    return(gr)
 }
 
-#regions=bed_to_granges("BROADPEAK_TSS.bed")
-regions=bed_to_granges("BROADPEAK_66.bed")
- counts <- regionCounts(bam.files, regions, ext=300, param=param)
-countData=assay(counts)
-colnames(countData)=bam.files
+#
+require(csaw)
+
+param <- readParam(minq=10, pe='both')
+
+regions=bed_to_granges("~/ayako/ayako_dejavu/peakcall/CD41_merged_peaks.bed")
+
+
+counts <- regionCounts(bam.files, regions, param=param)
+##
+#
+library(Rsubread)
+
+x=read.table('~/ayako/ayako_dejavu/peakcall/CD41_merged_peaks.bed',sep="\t",stringsAsFactors=F)
+
+ann = data.frame(GeneID=paste(x[,1],x[,2],x[,3],sep="_"),Chr=x[,1],Start=x[,2],End=x[,3],Strand='+')
+
+bam.files <- c('/root/ayako/ayako_dejavu/bam/CD41+_untr_1_Aligned_rmdup.sortedByCoord.out.bam',
+              '/root/ayako/ayako_dejavu/bam/CD41+_untr_2_Aligned_rmdup.sortedByCoord.out.bam',
+              '/root/ayako/ayako_dejavu/bam/CD41+_untr_3_Aligned_rmdup.sortedByCoord.out.bam',
+              '/root/ayako/ayako_dejavu/bam/CD41+_tr_1_Aligned_rmdup.sortedByCoord.out.bam',
+              '/root/ayako/ayako_dejavu/bam/CD41+_tr_2_Aligned_rmdup.sortedByCoord.out.bam',
+              '/root/ayako/ayako_dejavu/bam/CD41-_tr_1_Aligned_rmdup.sortedByCoord.out.bam',
+              '/root/ayako/ayako_dejavu/bam/CD41-_tr_2_Aligned_rmdup.sortedByCoord.out.bam')
+
+
+
+fc_SE <- featureCounts(bam.files,annot.ext=ann,isPairedEnd=TRUE,nthreads=20)
+
+#
+##
+
+countData=fc_SE$counts
+
+colnames(countData)=gsub('X.root.ayako.ayako_dejavu.bam.',"",colnames(countData))
+
+colnames(countData)=gsub('_Aligned_rmdup.sortedByCoord.out.bam',"",colnames(countData))
+
+##
+#
+
+countData=readRDS('atac_countdata.rds')
+
+
+colnames(countData)=c("CD41_plus_untr_1","CD41_plus_untr_2","CD41_plus_untr_3","CD41_plus_tr_1","CD41_plus_tr_2","CD41_minus_tr_1","CD41_minus_tr_2")
+
 
 require(DESeq2)
 
@@ -50,14 +91,60 @@ dds <- DESeqDataSetFromMatrix(
        countData = countData,
        colData = colData,
        design = ~ group)
-dds <- estimateSizeFactors(dds)
-sizeFactors(dds) <- normfacs
 
+dLRT <- DESeq(dds, test="LRT", reduced=~1)
+dLRT_vsd <- varianceStabilizingTransformation(dLRT)
+dLRT_res <- results(dLRT)
 
-rld <- rlogTransformation( dds )
-
-x=assay(rld)
-postscript("~/Downloads/h2az/66_acH2AZ_H2AZ.ps")
-boxplot((x[,3]/x[,1]),(x[,4]/x[,1]),outline=0,border=c("blue","goldenrod4"),width=c(4,4),names=c("siControl","siTIP60A"),ylab="acH2Az/H2AZ across peaks at TSS",boxlwd = 3)
+pdf("Diagnostic_design_pca.pdf")
+plotPCA(dLRT_vsd,ntop=30000,intgroup=c('group'))
 dev.off()
 
+####
+##
+design<-data.frame(cells = c("CD41_plus_untr","CD41_plus_untr","CD41_plus_untr","CD41_plus_tr","CD41_plus_tr") )
+
+dds <- DESeqDataSetFromMatrix(countData = countData[,c(1,2,3,4,5)], colData = design, design = ~ cells)
+dds <- DESeq(dds)
+res <- results(dds, contrast=c("cells","CD41_plus_untr","CD41_plus_tr"))
+
+library(graphics)
+pdf("Volcano_CD41+_trt_vs_untreat.pdf")
+plot(res$log2FoldChange,-log10(res$padj),xlab=expression('Log'[2]*' Fold Change CD41+ UnTreated vs CD41+ Treated '),ylab=expression('-Log'[10]*' Q-values'),nrpoints=0)
+dev.off()
+
+ix=res$padj<0.05 & res$log2FoldChange<(-1)
+ix[is.na(ix)]=FALSE
+write.table(gsub("_","\t",rownames(res[ix,])),"CD41+_tr_over_CD41+_untr.bed",quote=FALSE,col.names=FALSE,row.names=FALSE)
+
+ix=res$padj<0.05 & res$log2FoldChange>(1)
+ix[is.na(ix)]=FALSE
+write.table(gsub("_","\t",rownames(res[ix,])),"CD41+_untr_over_CD41+_tr.bed",quote=FALSE,col.names=FALSE,row.names=FALSE)
+##
+####
+design<-data.frame(cells = c("CD41_minus_tr","CD41_minus_tr","CD41_plus_tr","CD41_plus_tr") )
+
+dds <- DESeqDataSetFromMatrix(countData = countData[,c(4,5,6,7)], colData = design, design = ~ cells)
+dds <- DESeq(dds)
+res <- results(dds, contrast=c("cells","CD41_minus_tr","CD41_plus_tr"))
+
+library(graphics)
+pdf("Volcano_CD41_minus_vs_plus.pdf")
+plot(res$log2FoldChange,-log10(res$padj),xlab=expression('Log'[2]*' Fold Change CD41- Treated vs CD41- Treated'),ylab=expression('-Log'[10]*' Q-values'),nrpoints=0)
+dev.off()
+
+ix=res$padj<0.05 & res$log2FoldChange<(-1)
+ix[is.na(ix)]=FALSE
+write.table(gsub("_","\t",rownames(res[ix,])),"CD41+_over_CD41-.bed",quote=FALSE,col.names=FALSE,row.names=FALSE)
+
+ix=res$padj<0.05 & res$log2FoldChange>(1)
+ix[is.na(ix)]=FALSE
+write.table(gsub("_","\t",rownames(res[ix,])),"CD41-_over_CD41+.bed",quote=FALSE,col.names=FALSE,row.names=FALSE)
+
+#############
+
+design<-data.frame(cells = c("CD41_plus_untr","CD41_plus_untr","CD41_plus_untr","CD41_minus_tr","CD41_minus_tr") )
+
+dds <- DESeqDataSetFromMatrix(countData = countData[,c(1,2,3,6,7)], colData = design, design = ~ cells)
+dds <- DESeq(dds)
+res <- results(dds, contrast=c("cells","CD41_plus_untr","CD41_minus_tr"))
