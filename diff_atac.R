@@ -295,3 +295,26 @@ x=heatmap.3(rbind(ex1[ex1.clust$order,],ex2[ex2.clust$order,]),col=colors, hclus
 legend('topright',legend=c("Open Chromatin in CD41- treated","Open Chromatin in CD41+ untreated"),fill=c("#bae1ff","#baffc9"),border=NA,bty = "n")
 dev.off()
 
+################################################################################################
+################################################
+# 
+
+countData=readRDS('atac_countdata.rds')
+
+
+colnames(countData)=c("CD41_plus_untr_1","CD41_plus_untr_2","CD41_plus_untr_3","CD41_plus_tr_1","CD41_plus_tr_2","CD41_minus_tr_1","CD41_minus_tr_2")
+
+
+require(DESeq2)
+
+colData <- data.frame(group=c("CD41_plus_untr","CD41_plus_untr","CD41_plus_untr","CD41_plus_tr","CD41_plus_tr","CD41_minus_tr","CD41_minus_tr"))
+dds <- DESeqDataSetFromMatrix(
+       countData = countData,
+       colData = colData,
+       design = ~ group)
+
+dLRT <- DESeq(dds, test="LRT", reduced=~1)
+dLRT_res <- results(dLRT)
+
+dLRT_vsd <- varianceStabilizingTransformation(dLRT)
+plotPCA(dLRT_vsd,ntop=30000,intgroup=c('group'))
