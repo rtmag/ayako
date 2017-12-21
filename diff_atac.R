@@ -164,3 +164,50 @@ write.table(gsub("_","\t",rownames(res[ix,])),"CD41-_treated_over_CD41+_untreate
 ix=res$padj<0.05 & res$log2FoldChange>(1)
 ix[is.na(ix)]=FALSE
 write.table(gsub("_","\t",rownames(res[ix,])),"CD41+_untreated_over_CD41-_treated.bed",quote=FALSE,col.names=FALSE,row.names=FALSE)
+
+#################
+#### intersect
+
+intersectBed -a ~/ayako/ayako_dejavu/mm10_tss.bed -b CD41+_treated_over_CD41+_untreated.bed|cut -f4 > CD41+_treated_over_CD41+_untreated.tss
+intersectBed -a ~/ayako/ayako_dejavu/mm10_tss.bed -b CD41+_untreated_over_CD41+_treated.bed|cut -f4 > CD41+_untreated_over_CD41+_treated.tss
+
+intersectBed -a ~/ayako/ayako_dejavu/mm10_tss.bed -b CD41+_treated_over_CD41-_treated.bed|cut -f4 > CD41+_treated_over_CD41-_treated.tss
+intersectBed -a ~/ayako/ayako_dejavu/mm10_tss.bed -b CD41-_treated_over_CD41+_treated.bed|cut -f4 > CD41-_treated_over_CD41+_treated.tss
+
+intersectBed -a ~/ayako/ayako_dejavu/mm10_tss.bed -b CD41-_treated_over_CD41+_untreated.bed|cut -f4 > CD41-_treated_over_CD41+_untreated.tss
+intersectBed -a ~/ayako/ayako_dejavu/mm10_tss.bed -b CD41+_untreated_over_CD41-_treated.bed|cut -f4 > CD41+_untreated_over_CD41-_treated.tss
+##
+#
+expr=read.table(pipe('grep -v "RNA-seq" ../GSE60101_1256271tableS2.txt'),sep="\t",header=T)
+# CD41+ untreated VS CD41+ treated
+
+x1=read.table('CD41+_treated_over_CD41+_untreated.tss')
+x2=read.table('CD41+_untreated_over_CD41+_treated.tss')
+
+ex1=expr[expr[,1] %in% x1[,1],3:18]
+rownames(ex1)=make.names( expr[expr[,1] %in% x1[,1],2], unique=T)
+ex2=expr[expr[,1] %in% x2[,1],3:18]
+rownames(ex2)=make.names( expr[expr[,1] %in% x2[,1],2], unique=T)
+
+track=c(rep(1,dim(ex1)[1]),rep(2,dim(ex2)[1]))
+
+#ffb3ba red
+#baffc9 green
+#bae1ff blue
+
+colores=c("#ffb3ba","#baffc9","#bae1ff")
+rlab=rbind(colores[track])
+
+ library(RColorBrewer)
+colors <- colorRampPalette( (brewer.pal(9, "RdBu")) )(20)
+cols=brewer.pal(3, "Set1")
+
+
+# set the custom distance and clustering functions
+hclustfunc <- function(x) hclust(x, method="complete")
+distfunc <- function(x) dist(x, method="euclidean")
+
+x=heatmap.3(rbind(ex1,ex2),col=colors, hclustfun=hclustfunc, distfun=distfunc, 
+            scale="row", trace="none",cexCol=1,KeyValueName="Expression",
+RowSideColors=rlab,dendrogram="both")
+
