@@ -179,8 +179,8 @@ intersectBed -a ~/ayako/ayako_dejavu/mm10_tss.bed -b CD41+_untreated_over_CD41-_
 ##
 #
 expr=read.table(pipe('grep -v "RNA-seq" ../GSE60101_1256271tableS2.txt'),sep="\t",header=T)
+#
 # CD41+ untreated VS CD41+ treated
-
 x1=read.table('CD41+_treated_over_CD41+_untreated.tss')
 x2=read.table('CD41+_untreated_over_CD41+_treated.tss')
 
@@ -191,11 +191,11 @@ rownames(ex2)=make.names( expr[expr[,1] %in% x2[,1],2], unique=T)
 
 track=c(rep(1,dim(ex1)[1]),rep(2,dim(ex2)[1]))
 
-#ffb3ba red
-#baffc9 green
-#bae1ff blue
+#ffb3ba red CD41+ treated
+#baffc9 green CD41+ untreated
+#bae1ff blue CD41- treated
 
-colores=c("#ffb3ba","#baffc9","#bae1ff")
+colores=c("#ffb3ba","#baffc9")
 rlab=rbind(colores[track])
 
  library(RColorBrewer)
@@ -207,7 +207,91 @@ cols=brewer.pal(3, "Set1")
 hclustfunc <- function(x) hclust(x, method="complete")
 distfunc <- function(x) dist(x, method="euclidean")
 
-x=heatmap.3(rbind(ex1,ex2),col=colors, hclustfun=hclustfunc, distfun=distfunc, 
-            scale="row", trace="none",cexCol=1,KeyValueName="Expression",
-RowSideColors=rlab,dendrogram="both")
+ex1.clust=hclustfunc(distfunc(ex1))
+ex2.clust=hclustfunc(distfunc(ex2))
+
+pdf("CD41+_untreated_VS_CD41+_treated.pdf")
+x=heatmap.3(rbind(ex1[ex1.clust$order,],ex2[ex2.clust$order,]),col=colors, hclustfun=hclustfunc, distfun=distfunc, 
+            scale="row", trace="none",cexCol=1,KeyValueName="Expression",Rowv=FALSE, RowSideColors=rlab,dendrogram="none")
+
+legend('topright',legend=c("Open Chromatin in CD41+ treated","Open Chromatin in CD41+ untreated"),fill=c("#ffb3ba","#baffc9"),border=NA,bty = "n")
+dev.off()
+###
+
+# CD41- treated VS CD41+ treated
+
+
+x2=read.table('CD41+_treated_over_CD41-_treated.tss')
+x1=read.table('CD41-_treated_over_CD41+_treated.tss')
+
+ex1=expr[expr[,1] %in% x1[,1],3:18]
+rownames(ex1)=make.names( expr[expr[,1] %in% x1[,1],2], unique=T)
+ex2=expr[expr[,1] %in% x2[,1],3:18]
+rownames(ex2)=make.names( expr[expr[,1] %in% x2[,1],2], unique=T)
+
+track=c(rep(1,dim(ex1)[1]),rep(2,dim(ex2)[1]))
+
+#ffb3ba red CD41+ treated
+#baffc9 green CD41+ untreated
+#bae1ff blue CD41- treated
+
+
+colores=c("#bae1ff","#ffb3ba")
+rlab=rbind(colores[track])
+
+ library(RColorBrewer)
+colors <- colorRampPalette( (brewer.pal(9, "RdBu")) )(20)
+
+
+# set the custom distance and clustering functions
+hclustfunc <- function(x) hclust(x, method="complete")
+distfunc <- function(x) dist(x, method="euclidean")
+
+ex1.clust=hclustfunc(distfunc(ex1))
+ex2.clust=hclustfunc(distfunc(ex2))
+
+pdf("CD41-_treated_VS_CD41+_treated.pdf")
+x=heatmap.3(rbind(ex1,ex2[ex2.clust$order,]),col=colors, hclustfun=hclustfunc, distfun=distfunc, 
+            scale="row", trace="none",cexCol=1,KeyValueName="Expression",Rowv=FALSE, RowSideColors=rlab,dendrogram="none")
+
+legend('topright',legend=c("Open Chromatin in CD41- treated","Open Chromatin in CD41+ treated"),fill=c("#bae1ff","#ffb3ba"),border=NA,bty = "n")
+dev.off()
+###
+# CD41+ untreated VS CD41- treated
+
+x2=read.table('CD41+_untreated_over_CD41-_treated.tss')
+x1=read.table('CD41-_treated_over_CD41+_untreated.tss')
+
+ex1=expr[expr[,1] %in% x1[,1],3:18]
+rownames(ex1)=make.names( expr[expr[,1] %in% x1[,1],2], unique=T)
+ex2=expr[expr[,1] %in% x2[,1],3:18]
+rownames(ex2)=make.names( expr[expr[,1] %in% x2[,1],2], unique=T)
+
+track=c(rep(1,dim(ex1)[1]),rep(2,dim(ex2)[1]))
+
+#ffb3ba red CD41+ treated
+#baffc9 green CD41+ untreated
+#bae1ff blue CD41- treated
+
+
+colores=c("#bae1ff","#baffc9")
+rlab=rbind(colores[track])
+
+ library(RColorBrewer)
+colors <- colorRampPalette( (brewer.pal(9, "RdBu")) )(20)
+
+
+# set the custom distance and clustering functions
+hclustfunc <- function(x) hclust(x, method="complete")
+distfunc <- function(x) dist(x, method="euclidean")
+
+ex1.clust=hclustfunc(distfunc(ex1))
+ex2.clust=hclustfunc(distfunc(ex2))
+
+pdf("CD41-_treated_VS_CD41+_untreated.pdf")
+x=heatmap.3(rbind(ex1[ex1.clust$order,],ex2[ex2.clust$order,]),col=colors, hclustfun=hclustfunc, distfun=distfunc, 
+            scale="row", trace="none",cexCol=1,KeyValueName="Expression",Rowv=FALSE, RowSideColors=rlab,dendrogram="none")
+
+legend('topright',legend=c("Open Chromatin in CD41- treated","Open Chromatin in CD41+ untreated"),fill=c("#bae1ff","#baffc9"),border=NA,bty = "n")
+dev.off()
 
