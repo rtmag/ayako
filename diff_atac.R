@@ -318,3 +318,73 @@ dLRT_res <- results(dLRT)
 
 dLRT_vsd <- varianceStabilizingTransformation(dLRT)
 plotPCA(dLRT_vsd,ntop=30000,intgroup=c('group'))
+###FDR
+
+
+####################################
+#######################################
+ex1=expr[ix, 3:18]
+rownames(ex1)=make.names( expr[ix, 2], unique=T)
+ix
+table(ix)
+tss
+table(ix)
+
+ex1
+ expr[ix, 1]
+tss[,4] %in% expr[ix, 1]
+table(tss[,4] %in% expr[ix, 1])
+ix
+table(tss[,4] %in% expr[ix, 1])
+table(ix)
+head(tss)
+tss[tss[,4] %in% expr[ix, 1],7:9]
+dim(tss[tss[,4] %in% expr[ix, 1],7:9])
+ix
+dim(tss[tss[,4] %in% expr[ix, 1],7:9])
+table(ix)
+dim(tss[tss[,4] %in% expr[ix, 1],7:9])
+paste(tss[tss[,4] %in% expr[ix, 1],7:9])
+paste(as.characters(tss[tss[,4] %in% expr[ix, 1],7:9]))
+paste(as.character(tss[tss[,4] %in% expr[ix, 1],7:9]))
+as.character(tss[tss[,4] %in% expr[ix, 1],7:9])
+(tss[tss[,4] %in% expr[ix, 1],7:9])
+paste(tss[tss[,4] %in% expr[ix, 1],7:9],sep="\t")
+jx=tss[tss[,4] %in% expr[ix, 1],7:9]
+jx
+class(jx)
+class(jx[,1])
+class(jx[,2])
+jx=tss[tss[,4] %in% expr[ix, 1],7:9]
+tss=read.table(pipe("intersectBed -a ../mm10_tss.bed -b LRT_FDR5.bed -wa -wb"),sep='\t',stringsAsFactors=F)
+expr=read.table(pipe('grep -v "RNA-seq" ../GSE60101_1256271tableS2.txt'),sep="\t",header=T,stringsAsFactors=F)
+#
+# LRT_FDR5
+ix = expr[,1] %in% tss[,4]
+ex1=expr[ix, 3:18]
+rownames(ex1)=make.names( expr[ix, 2], unique=T)
+jx=tss[tss[,4] %in% expr[ix, 1],7:9]
+jx
+class(jx[,2])
+class(jx[,3])
+class(jx[,1])
+paste(jx)
+paste(jx[,1])
+paste(jx[,1],jx[,2])
+paste(jx[,1],jx[,2],jx[,3])
+head(paste(jx[,1],jx[,2],jx[,3]))
+head(jx)
+head(paste(jx[,1],jx[,2],jx[,3],sep="_"))
+rown.name(dLRT_vsd) %in% (paste(jx[,1],jx[,2],jx[,3],sep="_")
+rown.name(dLRT_vsd) %in% paste(jx[,1],jx[,2],jx[,3],sep="_")
+row.name(dLRT_vsd) %in% paste(jx[,1],jx[,2],jx[,3],sep="_")
+row.names(dLRT_vsd) %in% paste(jx[,1],jx[,2],jx[,3],sep="_")
+table(row.names(dLRT_vsd) %in% paste(jx[,1],jx[,2],jx[,3],sep="_"))
+tss
+jx=tss[tss[,4] %in% expr[ix, 1],7:9]
+jx
+dim(jx)
+dim(jx)
+table(row.names(dLRT_vsd) %in% paste(jx[,1],jx[,2],jx[,3],sep="_"))
+(row.names(dLRT_vsd) %in% paste(jx[,1],jx[,2],jx[,3],sep="_"))
+
