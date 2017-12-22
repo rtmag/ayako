@@ -315,14 +315,32 @@ dds <- DESeqDataSetFromMatrix(
 
 dLRT <- DESeq(dds, test="LRT", reduced=~1)
 dLRT_res <- results(dLRT)
-
 dLRT_vsd <- varianceStabilizingTransformation(dLRT)
-plotPCA(dLRT_vsd,ntop=30000,intgroup=c('group'))
 ###FDR
+write.table(gsub("_","\t",rownames(dLRT_res[dLRT_res$padj<0.05 & !is.na(dLRT_res$padj),])),"LRT_FDR5.bed",quote=FALSE,col.names=FALSE,row.names=FALSE)
+#
+tss=read.table(pipe("intersectBed -a ../mm10_tss.bed -b LRT_FDR5.bed -wa -wb"),sep='\t',stringsAsFactors=F)
+expr=read.table(pipe('grep -v "RNA-seq" ../GSE60101_1256271tableS2.txt'),sep="\t",header=T,stringsAsFactors=F)
+
+vsd=assay(dLRT_vsd)
+#
+
+#
+ix = expr[,1] %in% tss[,4]
+ex1=expr[ix, 3:18]
+rownames(ex1)=make.names( expr[ix, 2], unique=T)
+
+
+
+
+jx=tss[tss[,4] %in% expr[ix, 1],7:9]
 
 
 ####################################
 #######################################
+
+ix = expr[,1] %in% tss[,4]
+
 ex1=expr[ix, 3:18]
 rownames(ex1)=make.names( expr[ix, 2], unique=T)
 ix
@@ -386,5 +404,5 @@ jx
 dim(jx)
 dim(jx)
 table(row.names(dLRT_vsd) %in% paste(jx[,1],jx[,2],jx[,3],sep="_"))
-(row.names(dLRT_vsd) %in% paste(jx[,1],jx[,2],jx[,3],sep="_"))
+vsd[row.names(dLRT_vsd) %in% paste(jx[,1],jx[,2],jx[,3],sep="_"),]
 
