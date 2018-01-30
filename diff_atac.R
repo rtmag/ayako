@@ -97,7 +97,7 @@ dLRT_vsd <- varianceStabilizingTransformation(dLRT)
 dLRT_res <- results(dLRT)
 
 pdf("Diagnostic_design_pca.pdf")
-plotPCA(dLRT_vsd,ntop=30000,intgroup=c('group'))
+plotPCA(dLRT_vsd,ntop=120000,intgroup=c('group'))
 dev.off()
 
 ####
