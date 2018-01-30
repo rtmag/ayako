@@ -86,7 +86,7 @@ colnames(countData)=c("CD41_plus_untr_1","CD41_plus_untr_2","CD41_plus_untr_3","
 
 require(DESeq2)
 
-colData <- data.frame(group=colnames(countData))
+colData <- data.frame(group=gsub("\\_\\d$","",colnames(countData),perl=TRUE) )
 dds <- DESeqDataSetFromMatrix(
        countData = countData,
        colData = colData,
