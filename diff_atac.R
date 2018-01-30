@@ -297,7 +297,7 @@ dev.off()
 
 ################################################################################################
 ################################################
-# 
+# ULTIMATE HEATMAP
 
 countData=readRDS('atac_countdata.rds')
 
@@ -317,11 +317,10 @@ dLRT <- DESeq(dds, test="LRT", reduced=~1)
 dLRT_res <- results(dLRT)
 dLRT_vsd <- varianceStabilizingTransformation(dLRT)
 ###FDR
-write.table(gsub("_","\t",rownames(dLRT_res[dLRT_res$padj<0.05 & !is.na(dLRT_res$padj),])),"LRT_FDR5.bed",quote=FALSE,col.names=FALSE,row.names=FALSE)
+#write.table(gsub("_","\t",rownames(dLRT_res[dLRT_res$padj<0.05 & !is.na(dLRT_res$padj),])),"LRT_FDR5.bed",quote=FALSE,col.names=FALSE,row.names=FALSE)
 #
 tss=read.table(pipe("intersectBed -a ../mm10_tss.bed -b LRT_FDR5.bed -wa -wb"),sep='\t',stringsAsFactors=F)
 expr=read.table(pipe('grep -v "RNA-seq" ../GSE60101_1256271tableS2.txt'),sep="\t",header=T,stringsAsFactors=F)
-
 vsd=assay(dLRT_vsd)
 #
 
