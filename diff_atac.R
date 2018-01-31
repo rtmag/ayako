@@ -298,7 +298,7 @@ dev.off()
 ################################################################################################
 ################################################
 # ULTIMATE HEATMAP
-
+source('https://raw.githubusercontent.com/rtmag/tumor-meth-pipe/master/heatmap3.R')
 countData=readRDS('atac_countdata.rds')
 
 
@@ -317,14 +317,47 @@ dLRT <- DESeq(dds, test="LRT", reduced=~1)
 dLRT_res <- results(dLRT)
 dLRT_vsd <- varianceStabilizingTransformation(dLRT)
 ###FDR
-#write.table(gsub("_","\t",rownames(dLRT_res[dLRT_res$padj<0.05 & !is.na(dLRT_res$padj),])),"LRT_FDR5.bed",quote=FALSE,col.names=FALSE,row.names=FALSE)
+#write.table(gsub("_","\t",rownames(dLRT_res[dLRT_res$padj<0.01 & !is.na(dLRT_res$padj),])),"LRT_FDR1.bed",quote=FALSE,col.names=FALSE,row.names=FALSE)
 #
-tss=read.table(pipe("intersectBed -a ../mm10_tss.bed -b LRT_FDR5.bed -wa -wb"),sep='\t',stringsAsFactors=F)
+#tss=read.table(pipe("intersectBed -a ../mm10_tss.bed -b LRT_FDR5.bed -wa -wb"),sep='\t',stringsAsFactors=F)
+tss=read.table(pipe("intersectBed -a ../mm10_tss.bed -b LRT_FDR1.bed -wa -wb"),sep='\t',stringsAsFactors=F)
 expr=read.table(pipe('grep -v "RNA-seq" ../GSE60101_1256271tableS2.txt'),sep="\t",header=T,stringsAsFactors=F)
 vsd=assay(dLRT_vsd)
 #
+tss_vsd=vsd[match(paste(tss[,7],tss[,8],tss[,9],sep="_"),rownames(vsd)),]
 
-#
+library(RColorBrewer)
+colors <- colorRampPalette( (brewer.pal(9, "Blues")) )(13)
+hclustfunc <- function(x) hclust(x, method="complete")
+distfunc <- function(x) dist(x, method="euclidean")
+
+x=heatmap.3(tss_vsd,col=colors, hclustfun=hclustfunc, distfun=distfunc, 
+            scale="row", trace="none",cexCol=1,KeyValueName="Expression",dendrogram="row")
+
+
+##
+tss_vsd=vsd[rownames(vsd) %in% paste(tss[,7],tss[,8],tss[,9],sep="_"), 1:5]
+x=heatmap.3(tss_vsd[,1:5],col=colors,scale="row", trace="none",cexCol=1,KeyValueName="Expression",dendrogram="row")
+##
+colors <- colorRampPalette( (brewer.pal(9, "Blues")) )(5)
+tss_vsd=vsd[match(paste(tss[,7],tss[,8],tss[,9],sep="_"),rownames(vsd)),]
+x=heatmap.3(tss_vsd,col=colors,scale="row", trace="none",cexCol=1,KeyValueName="Expression",dendrogram="row")
+
+# CD41+ untreated VS CD41+ treated
+
+design<-data.frame(cells = c("CD41_plus_untr","CD41_plus_untr","CD41_plus_untr","CD41_plus_tr","CD41_plus_tr") )
+
+dds <- DESeqDataSetFromMatrix(countData = countData[,c(1,2,3,4,5)], colData = design, design = ~ cells)
+dds <- DESeq(dds)
+res <- results(dds, contrast=c("cells","CD41_plus_untr","CD41_plus_tr"))
+write.table(gsub("_","\t",rownames(res[res$padj<0.01 & !is.na(res$padj),])),"LRT_FDR1.bed",quote=FALSE,col.names=FALSE,row.names=FALSE)
+
+
+
+
+########################################################################
+##############################################################################
+###########################################################################
 ix = expr[,1] %in% tss[,4]
 ex1=expr[ix, 3:18]
 rownames(ex1)=make.names( expr[ix, 2], unique=T)
