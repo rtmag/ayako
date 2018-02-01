@@ -390,11 +390,11 @@ colors <- colorRampPalette( (brewer.pal(9, "Blues")) )(13)
 hclustfunc <- function(x) hclust(x, method="complete")
 distfunc <- function(x) dist(x, method="euclidean")
 
-x=heatmap.3(tss_vsd[,1:5],col=colors, hclustfun=hclustfunc, distfun=distfunc, 
+x=heatmap.3(tss_vsd[,4:7],col=colors, hclustfun=hclustfunc, distfun=distfunc, 
             scale="row", trace="none",cexCol=1,KeyValueName="Expression",dendrogram="row")
 
-tss_vsd=vsd[rownames(vsd) %in% paste(tss[,7],tss[,8],tss[,9],sep="_"), 1:5]
-x=heatmap.3(tss_vsd[,1:5],col=colors,scale="row", trace="none",cexCol=1,KeyValueName="Expression",dendrogram="row")
+tss_vsd=vsd[rownames(vsd) %in% paste(tss[,7],tss[,8],tss[,9],sep="_"), 4:7]
+x=heatmap.3(tss_vsd,col=colors,scale="row", trace="none",cexCol=1,KeyValueName="Expression",dendrogram="row")
 ##
 ########################################################################
 ##############################################################################
