@@ -377,9 +377,9 @@ dds <- DESeqDataSetFromMatrix(countData = countData[,c(4,5,6,7)], colData = desi
 dds <- DESeq(dds)
 res <- results(dds, contrast=c("cells","CD41_minus_tr","CD41_plus_tr"))
 
-write.table(gsub("_","\t",rownames(res[res$padj<0.01 & !is.na(res$padj),])),"CD41+_trVSuntr_FDR1.bed",quote=FALSE,col.names=FALSE,row.names=FALSE)
+write.table(gsub("_","\t",rownames(res[res$padj<0.05 & !is.na(res$padj),])),"CD41_+VS-_FDR5.bed",quote=FALSE,col.names=FALSE,row.names=FALSE)
 
-tss=read.table(pipe("intersectBed -a ../mm10_tss.bed -b CD41+_trVSuntr_FDR1.bed -wa -wb"),sep='\t',stringsAsFactors=F)
+tss=read.table(pipe("intersectBed -a ../mm10_tss.bed -b CD41_+VS-_FDR5.bed -wa -wb"),sep='\t',stringsAsFactors=F)
 expr=read.table(pipe('grep -v "RNA-seq" ../GSE60101_1256271tableS2.txt'),sep="\t",header=T,stringsAsFactors=F)
 vsd=assay(dLRT_vsd)
 
