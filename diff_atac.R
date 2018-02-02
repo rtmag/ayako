@@ -356,18 +356,18 @@ tss=read.table(pipe("intersectBed -a ../mm10_tss.bed -b CD41+_trVSuntr_FDR1.bed 
 expr=read.table(pipe('grep -v "RNA-seq" ../GSE60101_1256271tableS2.txt'),sep="\t",header=T,stringsAsFactors=F)
 vsd=assay(dLRT_vsd)
 
-tss_vsd=vsd[match(paste(tss[,7],tss[,8],tss[,9],sep="_"),rownames(vsd)),]
+tss_vsd=vsd[match(paste(tss[,7],tss[,8],tss[,9],sep="_"),rownames(vsd)),1:5]
 
 library(RColorBrewer)
 colors <- colorRampPalette( (brewer.pal(9, "Blues")) )(13)
 hclustfunc <- function(x) hclust(x, method="complete")
 distfunc <- function(x) dist(x, method="euclidean")
 
-x=heatmap.3(tss_vsd[,1:5],col=colors, hclustfun=hclustfunc, distfun=distfunc, 
+x=heatmap.3(tss_vsd,col=colors, hclustfun=hclustfunc, distfun=distfunc, 
             scale="row", trace="none",cexCol=1,KeyValueName="Expression",dendrogram="row")
 
 tss_vsd=vsd[rownames(vsd) %in% paste(tss[,7],tss[,8],tss[,9],sep="_"), 1:5]
-x=heatmap.3(tss_vsd[,1:5],col=colors,scale="row", trace="none",cexCol=1,KeyValueName="Expression",dendrogram="row")
+x=heatmap.3(tss_vsd,col=colors,scale="row", trace="none",cexCol=1,KeyValueName="Expression",dendrogram="row")
 ##
 
 # CD41- treated VS CD41+ treated
