@@ -316,6 +316,11 @@ dds <- DESeqDataSetFromMatrix(
 dLRT <- DESeq(dds, test="LRT", reduced=~1)
 dLRT_res <- results(dLRT)
 dLRT_vsd <- varianceStabilizingTransformation(dLRT)
+saveRDS(dLRT_res,"dLRT_res.rds")
+saveRDS(dLRT_vsd,"dLRT_vsd.rds")
+
+dLRT_res=readRDS('dLRT_res.rds')
+dLRT_vsd=readRDS('dLRT_vsd.rds')
 ###FDR
 #write.table(gsub("_","\t",rownames(dLRT_res[dLRT_res$padj<0.01 & !is.na(dLRT_res$padj),])),"LRT_FDR1.bed",quote=FALSE,col.names=FALSE,row.names=FALSE)
 #
@@ -361,14 +366,26 @@ library(RColorBrewer)
 colors <- colorRampPalette( (brewer.pal(9, "Blues")) )(13)
 hclustfunc <- function(x) hclust(x, method="complete")
 distfunc <- function(x) dist(x, method="euclidean")
+distfunc <- function(x) as.dist(1-(cor(x, method="spearman")))
 
-x=heatmap.3(tss_vsd,col=colors, hclustfun=hclustfunc, distfun=distfunc, 
-            scale="row", trace="none",cexCol=1,KeyValueName="Expression",dendrogram="row")
+x=heatmap.3(tss_vsd,col=colors, hclustfun=hclustfunc, distfun=distfunc,
+            scale="row", trace="none",cexRow=0.5,cexCol=.7,KeyValueName="Expression",dendrogram="row")
 
-expr[match(tss[,4],expr[,1]),]
+tss_exp=expr[match(tss[,4],expr[,1]),]
+tss_exp[is.na(tss_exp)] <- 0
+rownames(tss_exp) = make.names( tss_exp[,2],unique=T)
+tss_exp=(tss_exp[,3:18])
+tss_exp=as.matrix(tss_exp)
 
-tss_vsd=vsd[rownames(vsd) %in% paste(tss[,7],tss[,8],tss[,9],sep="_"), 1:5]
-x=heatmap.3(tss_vsd,col=colors,scale="row", trace="none",cexCol=1,KeyValueName="Expression",dendrogram="row")
+colors <- colorRampPalette( (brewer.pal(9, "RdBu")) )(20)
+
+x=heatmap.3(tss_exp[x$rowInd,],col=colors, hclustfun=hclustfunc, distfun=distfunc, 
+            scale="row", trace="none",cexCol=1,KeyValueName="Expression",Rowv=FALSE,dendrogram="none")
+
+
+
+#tss_vsd=vsd[rownames(vsd) %in% paste(tss[,7],tss[,8],tss[,9],sep="_"), 1:5]
+#x=heatmap.3(tss_vsd,col=colors,scale="row", trace="none",cexCol=1,KeyValueName="Expression",dendrogram="row")
 ##
 
 # CD41- treated VS CD41+ treated
