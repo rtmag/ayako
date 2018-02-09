@@ -466,7 +466,6 @@ dev.off()
 ########################################################################
 ##############################################################################
 ###########################################################################
-
 heatmap.3(tss_vsd,col=colors, hclustfun=hclustfunc, distfun=distfunc,
             scale="row", trace="none",cexRow=0.5,cexCol=.7,KeyValueName="Expression",dendrogram="row")
 g1 <- grab_grob()
