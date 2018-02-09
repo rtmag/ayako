@@ -399,7 +399,7 @@ tss=read.table(pipe("intersectBed -a ../mm10_tss.bed -b CD41_+VS-_FDR5.bed -wa -
 expr=read.table(pipe('grep -v "RNA-seq" ../GSE60101_1256271tableS2.txt'),sep="\t",header=T,stringsAsFactors=F)
 vsd=assay(dLRT_vsd)
 
-tss_vsd=vsd[match(paste(tss[,7],tss[,8],tss[,9],sep="_"),rownames(vsd)),1:5]
+tss_vsd=vsd[match(paste(tss[,7],tss[,8],tss[,9],sep="_"),rownames(vsd)),4:7]
 
 library(RColorBrewer)
 colors <- colorRampPalette( (brewer.pal(9, "Blues")) )(13)
