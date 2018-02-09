@@ -348,6 +348,7 @@ tss_vsd=vsd[match(paste(tss[,7],tss[,8],tss[,9],sep="_"),rownames(vsd)),]
 x=heatmap.3(tss_vsd,col=colors,scale="row", trace="none",cexCol=1,KeyValueName="Expression",dendrogram="row")
 
 # CD41+ untreated VS CD41+ treated
+dLRT_vsd=readRDS('dLRT_vsd.rds')
 
 design<-data.frame(cells = c("CD41_plus_untr","CD41_plus_untr","CD41_plus_untr","CD41_plus_tr","CD41_plus_tr") )
 
@@ -366,10 +367,11 @@ library(RColorBrewer)
 colors <- colorRampPalette( (brewer.pal(9, "Blues")) )(13)
 hclustfunc <- function(x) hclust(x, method="complete")
 distfunc <- function(x) dist(x, method="euclidean")
-distfunc <- function(x) as.dist(1-(cor(x, method="spearman")))
+#distfunc <- function(x) as.dist(1-(cor(x, method="spearman")))
 
 x=heatmap.3(tss_vsd,col=colors, hclustfun=hclustfunc, distfun=distfunc,
             scale="row", trace="none",cexRow=0.5,cexCol=.7,KeyValueName="Expression",dendrogram="row")
+rowORDER=x$rowInd
 
 tss_exp=expr[match(tss[,4],expr[,1]),]
 tss_exp[is.na(tss_exp)] <- 0
@@ -379,13 +381,9 @@ tss_exp=as.matrix(tss_exp)
 
 colors <- colorRampPalette( (brewer.pal(9, "RdBu")) )(20)
 
-x=heatmap.3(tss_exp[x$rowInd,],col=colors, hclustfun=hclustfunc, distfun=distfunc, 
+heatmap.3(tss_exp[x$rowInd,],col=colors, hclustfun=hclustfunc, distfun=distfunc, 
             scale="row", trace="none",cexCol=1,KeyValueName="Expression",Rowv=FALSE,dendrogram="none")
 
-
-
-#tss_vsd=vsd[rownames(vsd) %in% paste(tss[,7],tss[,8],tss[,9],sep="_"), 1:5]
-#x=heatmap.3(tss_vsd,col=colors,scale="row", trace="none",cexCol=1,KeyValueName="Expression",dendrogram="row")
 ##
 
 # CD41- treated VS CD41+ treated
@@ -401,99 +399,98 @@ tss=read.table(pipe("intersectBed -a ../mm10_tss.bed -b CD41_+VS-_FDR5.bed -wa -
 expr=read.table(pipe('grep -v "RNA-seq" ../GSE60101_1256271tableS2.txt'),sep="\t",header=T,stringsAsFactors=F)
 vsd=assay(dLRT_vsd)
 
-tss_vsd=vsd[match(paste(tss[,7],tss[,8],tss[,9],sep="_"),rownames(vsd)),]
+tss_vsd=vsd[match(paste(tss[,7],tss[,8],tss[,9],sep="_"),rownames(vsd)),1:5]
 
 library(RColorBrewer)
 colors <- colorRampPalette( (brewer.pal(9, "Blues")) )(13)
 hclustfunc <- function(x) hclust(x, method="complete")
 distfunc <- function(x) dist(x, method="euclidean")
 
-x=heatmap.3(tss_vsd[,4:7],col=colors, hclustfun=hclustfunc, distfun=distfunc, 
-            scale="row", trace="none",cexCol=1,KeyValueName="Expression",dendrogram="row")
+x=heatmap.3(tss_vsd,col=colors, hclustfun=hclustfunc, distfun=distfunc,
+            scale="row", trace="none",cexRow=0.5,cexCol=.7,KeyValueName="Expression",dendrogram="row")
+rowORDER=x$rowInd
 
-tss_vsd=vsd[rownames(vsd) %in% paste(tss[,7],tss[,8],tss[,9],sep="_"), 4:7]
-x=heatmap.3(tss_vsd,col=colors,scale="row", trace="none",cexCol=1,KeyValueName="Expression",dendrogram="row")
+
+tss_exp=expr[match(tss[,4],expr[,1]),]
+tss_exp[is.na(tss_exp)] <- 0
+rownames(tss_exp) = make.names( tss_exp[,2],unique=T)
+tss_exp=(tss_exp[,3:18])
+tss_exp=as.matrix(tss_exp)
+
+colors <- colorRampPalette( (brewer.pal(9, "RdBu")) )(20)
+
+#x=heatmap.3(tss_exp[x$rowInd,],col=colors, hclustfun=hclustfunc, distfun=distfunc, 
+#            scale="row", trace="none",cexCol=1,KeyValueName="Expression",Rowv=FALSE,dendrogram="none")
+
 ##
 ########################################################################
 ##############################################################################
 ###########################################################################
-ix = expr[,1] %in% tss[,4]
-ex1=expr[ix, 3:18]
-rownames(ex1)=make.names( expr[ix, 2], unique=T)
+library(gridGraphics)
+library(grid)
+
+library(gridGraphics)
+grab_grob <- function(){
+  grid.echo()
+  grid.grab()
+}
+
+heatmap.3(tss_vsd,col=colors, hclustfun=hclustfunc, distfun=distfunc,
+            scale="row", trace="none",cexRow=0.5,cexCol=.7,KeyValueName="Expression",dendrogram="row")
+g1 <- grab_grob()
+
+heatmap.3(tss_exp[rowORDER,],col=colors, hclustfun=hclustfunc, distfun=distfunc, 
+            scale="col", trace="none",cexCol=1,KeyValueName="Expression",Rowv=FALSE,dendrogram="none")
+
+g2 <- grab_grob()
+
+pdf("CD41+_trVSuntr2.pdf")
+
+grid.newpage()
+
+# library(gridExtra)
+# grid.arrange(g,g, ncol=2, clip=TRUE)
+
+lay <- grid.layout(nrow = 1, ncol=2)
+pushViewport(viewport(layout = lay))
+
+grid.draw(editGrob(g1, vp=viewport(layout.pos.row = 1, 
+                                  layout.pos.col = 1, clip=TRUE)))
 
 
+grid.draw(editGrob(g2, vp=viewport(layout.pos.row = 1, 
+                                  layout.pos.col = 2, clip=TRUE)))
+upViewport(1)
+dev.off()
+
+########################################################################
+##############################################################################
+###########################################################################
+
+heatmap.3(tss_vsd,col=colors, hclustfun=hclustfunc, distfun=distfunc,
+            scale="row", trace="none",cexRow=0.5,cexCol=.7,KeyValueName="Expression",dendrogram="row")
+g1 <- grab_grob()
+
+x=heatmap.3(tss_exp[rowORDER,],col=colors, hclustfun=hclustfunc, distfun=distfunc, 
+            scale="col", trace="none",cexCol=1,KeyValueName="Expression",Rowv=FALSE,dendrogram="none")
+
+g2 <- grab_grob()
+
+pdf("CD41+_tr_VS_CD41-_tr.pdf")
+
+grid.newpage()
+
+# library(gridExtra)
+# grid.arrange(g,g, ncol=2, clip=TRUE)
+
+lay <- grid.layout(nrow = 1, ncol=2)
+pushViewport(viewport(layout = lay))
+
+grid.draw(editGrob(g1, vp=viewport(layout.pos.row = 1, 
+                                  layout.pos.col = 1, clip=TRUE)))
 
 
-jx=tss[tss[,4] %in% expr[ix, 1],7:9]
-
-
-####################################
-#######################################
-
-ix = expr[,1] %in% tss[,4]
-
-ex1=expr[ix, 3:18]
-rownames(ex1)=make.names( expr[ix, 2], unique=T)
-ix
-table(ix)
-tss
-table(ix)
-
-ex1
- expr[ix, 1]
-tss[,4] %in% expr[ix, 1]
-table(tss[,4] %in% expr[ix, 1])
-ix
-table(tss[,4] %in% expr[ix, 1])
-table(ix)
-head(tss)
-tss[tss[,4] %in% expr[ix, 1],7:9]
-dim(tss[tss[,4] %in% expr[ix, 1],7:9])
-ix
-dim(tss[tss[,4] %in% expr[ix, 1],7:9])
-table(ix)
-dim(tss[tss[,4] %in% expr[ix, 1],7:9])
-paste(tss[tss[,4] %in% expr[ix, 1],7:9])
-paste(as.characters(tss[tss[,4] %in% expr[ix, 1],7:9]))
-paste(as.character(tss[tss[,4] %in% expr[ix, 1],7:9]))
-as.character(tss[tss[,4] %in% expr[ix, 1],7:9])
-(tss[tss[,4] %in% expr[ix, 1],7:9])
-paste(tss[tss[,4] %in% expr[ix, 1],7:9],sep="\t")
-jx=tss[tss[,4] %in% expr[ix, 1],7:9]
-jx
-class(jx)
-class(jx[,1])
-class(jx[,2])
-jx=tss[tss[,4] %in% expr[ix, 1],7:9]
-tss=read.table(pipe("intersectBed -a ../mm10_tss.bed -b LRT_FDR5.bed -wa -wb"),sep='\t',stringsAsFactors=F)
-expr=read.table(pipe('grep -v "RNA-seq" ../GSE60101_1256271tableS2.txt'),sep="\t",header=T,stringsAsFactors=F)
-#
-# LRT_FDR5
-ix = expr[,1] %in% tss[,4]
-ex1=expr[ix, 3:18]
-rownames(ex1)=make.names( expr[ix, 2], unique=T)
-jx=tss[tss[,4] %in% expr[ix, 1],7:9]
-jx
-class(jx[,2])
-class(jx[,3])
-class(jx[,1])
-paste(jx)
-paste(jx[,1])
-paste(jx[,1],jx[,2])
-paste(jx[,1],jx[,2],jx[,3])
-head(paste(jx[,1],jx[,2],jx[,3]))
-head(jx)
-head(paste(jx[,1],jx[,2],jx[,3],sep="_"))
-rown.name(dLRT_vsd) %in% (paste(jx[,1],jx[,2],jx[,3],sep="_")
-rown.name(dLRT_vsd) %in% paste(jx[,1],jx[,2],jx[,3],sep="_")
-row.name(dLRT_vsd) %in% paste(jx[,1],jx[,2],jx[,3],sep="_")
-row.names(dLRT_vsd) %in% paste(jx[,1],jx[,2],jx[,3],sep="_")
-table(row.names(dLRT_vsd) %in% paste(jx[,1],jx[,2],jx[,3],sep="_"))
-tss
-jx=tss[tss[,4] %in% expr[ix, 1],7:9]
-jx
-dim(jx)
-dim(jx)
-table(row.names(dLRT_vsd) %in% paste(jx[,1],jx[,2],jx[,3],sep="_"))
-vsd[row.names(dLRT_vsd) %in% paste(jx[,1],jx[,2],jx[,3],sep="_"),]
-
+grid.draw(editGrob(g2, vp=viewport(layout.pos.row = 1, 
+                                  layout.pos.col = 2, clip=TRUE)))
+upViewport(1)
+dev.off()
