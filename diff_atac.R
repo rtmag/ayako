@@ -116,11 +116,11 @@ dev.off()
 
 ix=res$padj<0.05 & res$log2FoldChange<(-1)
 ix[is.na(ix)]=FALSE
-write.table(gsub("_","\t",rownames(res[ix,])),"CD41+_treated_over_CD41+_untreated.bed",quote=FALSE,col.names=FALSE,row.names=FALSE)
+write.table(gsub("_","\t",rownames(res[ix,])),"results/CD41+_treated_over_CD41+_untreated.bed",quote=FALSE,col.names=FALSE,row.names=FALSE)
 
 ix=res$padj<0.05 & res$log2FoldChange>(1)
 ix[is.na(ix)]=FALSE
-write.table(gsub("_","\t",rownames(res[ix,])),"CD41+_untreated_over_CD41+_treated.bed",quote=FALSE,col.names=FALSE,row.names=FALSE)
+write.table(gsub("_","\t",rownames(res[ix,])),"results/CD41+_untreated_over_CD41+_treated.bed",quote=FALSE,col.names=FALSE,row.names=FALSE)
 ##
 
 # CD41- treated VS CD41+ treated
@@ -137,11 +137,11 @@ dev.off()
 
 ix=res$padj<0.05 & res$log2FoldChange<(-1)
 ix[is.na(ix)]=FALSE
-write.table(gsub("_","\t",rownames(res[ix,])),"CD41+_treated_over_CD41-_treated.bed",quote=FALSE,col.names=FALSE,row.names=FALSE)
+write.table(gsub("_","\t",rownames(res[ix,])),"results/CD41+_treated_over_CD41-_treated.bed",quote=FALSE,col.names=FALSE,row.names=FALSE)
 
 ix=res$padj<0.05 & res$log2FoldChange>(1)
 ix[is.na(ix)]=FALSE
-write.table(gsub("_","\t",rownames(res[ix,])),"CD41-_treated_over_CD41+_treated.bed",quote=FALSE,col.names=FALSE,row.names=FALSE)
+write.table(gsub("_","\t",rownames(res[ix,])),"results/CD41-_treated_over_CD41+_treated.bed",quote=FALSE,col.names=FALSE,row.names=FALSE)
 
 #############
 # CD41+ untreated VS CD41- treated
@@ -159,11 +159,11 @@ dev.off()
 
 ix=res$padj<0.05 & res$log2FoldChange<(-1)
 ix[is.na(ix)]=FALSE
-write.table(gsub("_","\t",rownames(res[ix,])),"CD41-_treated_over_CD41+_untreated.bed",quote=FALSE,col.names=FALSE,row.names=FALSE)
+write.table(gsub("_","\t",rownames(res[ix,])),"results/CD41-_treated_over_CD41+_untreated.bed",quote=FALSE,col.names=FALSE,row.names=FALSE)
 
 ix=res$padj<0.05 & res$log2FoldChange>(1)
 ix[is.na(ix)]=FALSE
-write.table(gsub("_","\t",rownames(res[ix,])),"CD41+_untreated_over_CD41-_treated.bed",quote=FALSE,col.names=FALSE,row.names=FALSE)
+write.table(gsub("_","\t",rownames(res[ix,])),"results/CD41+_untreated_over_CD41-_treated.bed",quote=FALSE,col.names=FALSE,row.names=FALSE)
 
 #################
 #### intersect
@@ -493,3 +493,22 @@ grid.draw(editGrob(g2, vp=viewport(layout.pos.row = 1,
                                   layout.pos.col = 2, clip=TRUE)))
 upViewport(1)
 dev.off()
+
+#############
+
+intersectBed -a ../../mm10_tss.bed -b CD41+_treated_over_CD41+_untreated.bed -wa -wb|cut -f4| grep -f - ../../GSE60101_1256271tableS2.txt|cat header.txt - > CD41+_treated_over_CD41+_untreated_genes.txt
+intersectBed -a ../../mm10_tss.bed -b CD41+_treated_over_CD41-_treated.bed -wa -wb|cut -f4| grep -f - ../../GSE60101_1256271tableS2.txt|cat header.txt - > CD41+_treated_over_CD41-_treated_genes.txt
+intersectBed -a ../../mm10_tss.bed -b CD41+_untreated_over_CD41+_treated.bed -wa -wb|cut -f4| grep -f - ../../GSE60101_1256271tableS2.txt|cat header.txt - > CD41+_untreated_over_CD41+_treated_genes.txt
+intersectBed -a ../../mm10_tss.bed -b CD41+_untreated_over_CD41-_treated.bed -wa -wb|cut -f4| grep -f - ../../GSE60101_1256271tableS2.txt|cat header.txt - > CD41+_untreated_over_CD41-_treated_genes.txt
+
+intersectBed -a ../../mm10_tss.bed -b CD41-_treated_over_CD41+_treated.bed -wa -wb|cut -f4| grep -f - ../../GSE60101_1256271tableS2.txt|cat header.txt - > CD41-_treated_over_CD41+_treated_genes.txt
+intersectBed -a ../../mm10_tss.bed -b CD41-_treated_over_CD41+_untreated.bed -wa -wb|cut -f4| grep -f - ../../GSE60101_1256271tableS2.txt|cat header.txt - > CD41-_treated_over_CD41+_untreated_genes.txt
+
+
+
+
+
+
+
+
+
