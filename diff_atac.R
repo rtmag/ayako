@@ -1,4 +1,4 @@
-cat CD41+_tr_fdr5_peaks.broadPeak CD41+_untr_fdr5_peaks.broadPeak CD41-_tr_fdr5_peaks.broadPeak| \
+cat CD41+_tr_fdr5_peaks.broadPeak CD41+_untr_fdr5_peaks.broadPeak CD41-_tr_fdr5_peaks.broadPeak CD41-_untr_fdr5_peaks.broadPeak| \
 sort -k1,1 -k2,2n |bedtools merge -i - > CD41_merged_peaks.bed
 
 #
@@ -60,7 +60,10 @@ bam.files <- c('/root/ayako/ayako_dejavu/bam/CD41+_untr_1_Aligned_rmdup.sortedBy
               '/root/ayako/ayako_dejavu/bam/CD41+_tr_1_Aligned_rmdup.sortedByCoord.out.bam',
               '/root/ayako/ayako_dejavu/bam/CD41+_tr_2_Aligned_rmdup.sortedByCoord.out.bam',
               '/root/ayako/ayako_dejavu/bam/CD41-_tr_1_Aligned_rmdup.sortedByCoord.out.bam',
-              '/root/ayako/ayako_dejavu/bam/CD41-_tr_2_Aligned_rmdup.sortedByCoord.out.bam')
+              '/root/ayako/ayako_dejavu/bam/CD41-_tr_2_Aligned_rmdup.sortedByCoord.out.bam',
+              '/root/ayako/ayako_dejavu/cd41-_untreated/bam/CD41-_untr_1_Aligned_rmdup.sortedByCoord.out.bam',
+              '/root/ayako/ayako_dejavu/cd41-_untreated/bam/CD41-_untr_1_Aligned_rmdup.sortedByCoord.out.bam')
+
 
 
 
