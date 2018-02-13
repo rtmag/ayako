@@ -52,7 +52,7 @@ library(Rsubread)
 
 x=read.table('~/ayako/ayako_dejavu/peakcall/CD41_merged_peaks.bed',sep="\t",stringsAsFactors=F)
 
-ann = data.frame(GeneID=paste(x[,1],x[,2],x[,3],sep="_"),Chr=x[,1],Start=x[,2],End=x[,3],Strand='+')
+ann = data.frame(GeneID=paste(x[,1],x[,2],x[,3],sep="_!_"),Chr=x[,1],Start=x[,2],End=x[,3],Strand='+')
 
 bam.files <- c('/root/ayako/ayako_dejavu/bam/CD41+_untr_1_Aligned_rmdup.sortedByCoord.out.bam',
               '/root/ayako/ayako_dejavu/bam/CD41+_untr_2_Aligned_rmdup.sortedByCoord.out.bam',
@@ -102,8 +102,8 @@ dLRT_res <- results(dLRT)
 dLRT_res$padj[is.na(dLRT_res$padj)]=1
 
 
-write.table(gsub("_","\t",rownames(dLRT_res[dLRT_res$padj<0.01,])),"ATAC-Seq_merged_LRT_FDR1.bed",quote=FALSE,col.names=FALSE,row.names=FALSE)
-write.table(gsub("_","\t",rownames(dLRT_res[dLRT_res$padj<0.05,])),"ATAC-Seq_merged_LRT_FDR5.bed",quote=FALSE,col.names=FALSE,row.names=FALSE)
+write.table(gsub("_!_","\t",rownames(dLRT_res[dLRT_res$padj<0.01,])),"ATAC-Seq_merged_LRT_FDR1.bed",quote=FALSE,col.names=FALSE,row.names=FALSE)
+write.table(gsub("_!_","\t",rownames(dLRT_res[dLRT_res$padj<0.05,])),"ATAC-Seq_merged_LRT_FDR5.bed",quote=FALSE,col.names=FALSE,row.names=FALSE)
 
 
 pdf("Diagnostic_design_pca.pdf")
