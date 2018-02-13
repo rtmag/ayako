@@ -78,13 +78,14 @@ colnames(countData)=gsub('X.root.ayako.ayako_dejavu.bam.',"",colnames(countData)
 
 colnames(countData)=gsub('_Aligned_rmdup.sortedByCoord.out.bam',"",colnames(countData))
 
+saveRDS(countData,'atac_countdata.rds')
 ##
 #
 
 countData=readRDS('atac_countdata.rds')
 
 
-colnames(countData)=c("CD41_plus_untr_1","CD41_plus_untr_2","CD41_plus_untr_3","CD41_plus_tr_1","CD41_plus_tr_2","CD41_minus_tr_1","CD41_minus_tr_2")
+colnames(countData)=c("CD41_plus_untr_1","CD41_plus_untr_2","CD41_plus_untr_3","CD41_plus_tr_1","CD41_plus_tr_2","CD41_minus_tr_1","CD41_minus_tr_2","CD41_minus_untr_1","CD41_minus_untr_2")
 
 
 require(DESeq2)
@@ -98,9 +99,15 @@ dds <- DESeqDataSetFromMatrix(
 dLRT <- DESeq(dds, test="LRT", reduced=~1)
 dLRT_vsd <- varianceStabilizingTransformation(dLRT)
 dLRT_res <- results(dLRT)
+dLRT_res$padj[is.na(dLRT_res$padj)]=1
+
+
+write.table(gsub("_","\t",rownames(dLRT_res[dLRT_res$padj<0.01,])),"ATAC-Seq_merged_LRT_FDR1.bed",quote=FALSE,col.names=FALSE,row.names=FALSE)
+write.table(gsub("_","\t",rownames(dLRT_res[dLRT_res$padj<0.05,])),"ATAC-Seq_merged_LRT_FDR5.bed",quote=FALSE,col.names=FALSE,row.names=FALSE)
+
 
 pdf("Diagnostic_design_pca.pdf")
-plotPCA(dLRT_vsd,ntop=120000,intgroup=c('group'))
+plotPCA(dLRT_vsd,ntop=136500,intgroup=c('group'))
 dev.off()
 
 ####
