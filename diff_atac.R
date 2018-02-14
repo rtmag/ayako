@@ -62,7 +62,7 @@ bam.files <- c('/root/ayako/ayako_dejavu/bam/CD41+_untr_1_Aligned_rmdup.sortedBy
               '/root/ayako/ayako_dejavu/bam/CD41-_tr_1_Aligned_rmdup.sortedByCoord.out.bam',
               '/root/ayako/ayako_dejavu/bam/CD41-_tr_2_Aligned_rmdup.sortedByCoord.out.bam',
               '/root/ayako/ayako_dejavu/cd41-_untreated/bam/CD41-_untr_1_Aligned_rmdup.sortedByCoord.out.bam',
-              '/root/ayako/ayako_dejavu/cd41-_untreated/bam/CD41-_untr_1_Aligned_rmdup.sortedByCoord.out.bam')
+              '/root/ayako/ayako_dejavu/cd41-_untreated/bam/CD41-_untr_2_Aligned_rmdup.sortedByCoord.out.bam')
 
 
 
@@ -85,7 +85,8 @@ saveRDS(countData,'atac_countdata.rds')
 countData=readRDS('atac_countdata.rds')
 
 
-colnames(countData)=c("CD41_plus_untr_1","CD41_plus_untr_2","CD41_plus_untr_3","CD41_plus_tr_1","CD41_plus_tr_2","CD41_minus_tr_1","CD41_minus_tr_2","CD41_minus_untr_1","CD41_minus_untr_2")
+colnames(countData)=c("CD41_plus_untr_1","CD41_plus_untr_2","CD41_plus_untr_3","CD41_plus_tr_1","CD41_plus_tr_2",
+                      "CD41_minus_tr_1","CD41_minus_tr_2","CD41_minus_untr_1","CD41_minus_untr_2")
 
 
 require(DESeq2)
