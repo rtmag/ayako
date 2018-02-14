@@ -22,7 +22,7 @@ computeMatrix reference-point \
 -R /root/ayako/ayako_dejavu/diffbind/diffbind_deseq2/ATAC-Seq_merged_LRT_FDR5_.bed --referencePoint center \
 --sortRegions descend -bs 20 -a 1000 -b 1000 -p 40 -out /root/ayako/ayako_dejavu/heatmaps/ATAC-Seq_merged_LRT_FDR5.mat
 
-plotHeatmap --xAxisLabel "" --refPointLabel "ATAC Peak" --colorMap Blues -m /root/ayako/ayako_dejavu/heatmaps/ATAC-Seq_merged_LRT_FDR5.mat -out /root/ayako/ayako_dejavu/heatmaps/ATAC-Seq_merged_LRT_FDR5.pdf
+plotHeatmap --xAxisLabel "" --yAxisLabel "" --refPointLabel "ATAC Peak" --colorMap RdBu_r --kmeans 4 -m /root/ayako/ayako_dejavu/heatmaps/ATAC-Seq_merged_LRT_FDR5.mat -out /root/ayako/ayako_dejavu/heatmaps/ATAC-Seq_merged_LRT_FDR5.pdf
 
 
 
