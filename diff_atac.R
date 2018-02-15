@@ -247,6 +247,20 @@ write.table(CD41_plus_tr_4,"4_CD41+_tr_over_CD41-_tr.bed",sep="\t",quote=F,row.n
 write.table(CD41_minus_tr_4,"4_CD41-_tr_over_CD41+_tr.bed",sep="\t",quote=F,row.names=F,col.names=F)
 
 ###############################################################
+annotatePeaks.pl 1_CD41+_untr_over_CD41+_tr.bed mm10 > 1_CD41+_untr_over_CD41+_tr-mm10_annotation.txt
+annotatePeaks.pl 1_CD41+_tr_over_CD41+_untr.bed mm10 > 1_CD41+_tr_over_CD41+_untr-mm10_annotation.txt
+
+annotatePeaks.pl 2_CD41-_untr_over_CD41-_tr.bed mm10 > 2_CD41-_untr_over_CD41-_tr-mm10_annotation.txt
+annotatePeaks.pl 2_CD41-_tr_over_CD41-_untr.bed mm10 > 2_CD41-_tr_over_CD41-_untr-mm10_annotation.txt
+
+annotatePeaks.pl 3_CD41+_untr_over_CD41-_untr.bed mm10 > 3_CD41+_untr_over_CD41-_untr-mm10_annotation.txt
+annotatePeaks.pl 3_CD41-_untr_over_CD41+_untr.bed mm10 > 3_CD41-_untr_over_CD41+_untr-mm10_annotation.txt
+
+annotatePeaks.pl 4_CD41+_tr_over_CD41-_tr.bed mm10 > 4_CD41+_tr_over_CD41-_tr-mm10_annotation.txt
+annotatePeaks.pl 4_CD41-_tr_over_CD41+_tr.bed mm10 > 4_CD41-_tr_over_CD41+_tr-mm10_annotation.txt
+
+###############################################################
+
 library(graphics)
 library(ggplot2)
 
