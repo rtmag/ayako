@@ -119,7 +119,7 @@ dds <- DESeqDataSetFromMatrix(countData = countData[,c(1,2,3,4,5)], colData = de
 dds <- DESeq(dds)
 res <- results(dds, contrast=c("cells","CD41_plus_untr","CD41_plus_tr"))
 
-write.csv(res_log,"CD41+_untreated_vs_CD41+_treated.csv")
+write.csv(res,"CD41+_untreated_vs_CD41+_treated.csv")
 
 # CD41- untreated VS CD41- treated
 design<-data.frame(cells = c("CD41_minus_untr","CD41_minus_untr","CD41_minus_tr","CD41_minus_tr") )
@@ -130,7 +130,7 @@ res <- results(dds, contrast=c("cells","CD41_minus_untr","CD41_minus_tr"))
 
 res_log=data.frame(res,log10=-log10(res$padj))
 
-write.csv(res_log,"CD41-_untreated_vs_CD41-_treated.csv")
+write.csv(res,"CD41-_untreated_vs_CD41-_treated.csv")
 ########################################
 # CD41+ untreated VS CD41- untreated
 design<-data.frame(cells = c("CD41_plus_untr","CD41_plus_untr","CD41_plus_untr","CD41_minus_untr","CD41_minus_untr") )
@@ -139,7 +139,7 @@ dds <- DESeqDataSetFromMatrix(countData = countData[,c(1,2,3,8,9)], colData = de
 dds <- DESeq(dds)
 res <- results(dds, contrast=c("cells","CD41_plus_untr","CD41_minus_untr"))
 
-write.csv(res_log,"CD41+_untreated_vs_CD41-_untreated.csv")
+write.csv(res,"CD41+_untreated_vs_CD41-_untreated.csv")
 
 # CD41+ treated VS CD41- treated
 design<-data.frame(cells = c("CD41_plus_tr","CD41_plus_tr","CD41_minus_tr","CD41_minus_tr") )
@@ -148,15 +148,15 @@ dds <- DESeqDataSetFromMatrix(countData = countData[,c(4,5,6,7)], colData = desi
 dds <- DESeq(dds)
 res <- results(dds, contrast=c("cells","CD41_plus_tr","CD41_minus_tr"))
 
-write.csv(res_log,"CD41+_treated_vs_CD41-_treated.csv")
+write.csv(res,"CD41+_treated_vs_CD41-_treated.csv")
 
 ########################################
-
+library(ggplot2)
 
 res = read.csv("CD41+_untreated_vs_CD41+_treated.csv")
 
 pdf("CD41+_untreated_vs_CD41+_treated.pdf")
-plot(res$log2FoldChange,-log10(res$padj),xlab=expression('Log'[2]*' Fold Change ( CD41+ UnTreated / CD41+ Treated ) '),
+plot(res$log2FoldChange,-log10(res$padj),xlab=expression('Log'[2]*' Fold Change ( CD41+ Untreated / CD41+ Treated ) '),
               ylab=expression('-Log'[10]*' Q-values'),col=alpha("grey",.04))
 abline(v=-1,lty = 2,col="grey")
 abline(v=1,lty = 2,col="grey")
@@ -165,11 +165,11 @@ points(res$log2FoldChange[abs(res$log2FoldChange)>1 & -log10(res$padj>0.05)],
        -log10(res$padj)[abs(res$log2FoldChange)>1 & -log10(res$padj>0.05)],
       col=alpha("#c0392b",.05))
 dev.off()
-
+#
 res = read.csv("CD41-_untreated_vs_CD41-_treated.csv")
 
 pdf("CD41-_untreated_vs_CD41-_treated.pdf")
-plot(res$log2FoldChange,-log10(res$padj),xlab=expression('Log'[2]*' Fold Change ( CD41- UnTreated / CD41- Treated ) '),
+plot(res$log2FoldChange,-log10(res$padj),xlab=expression('Log'[2]*' Fold Change ( CD41- Untreated / CD41- Treated ) '),
               ylab=expression('-Log'[10]*' Q-values'),col=alpha("grey",.04))
 abline(v=-1,lty = 2,col="grey")
 abline(v=1,lty = 2,col="grey")
@@ -178,11 +178,24 @@ points(res$log2FoldChange[abs(res$log2FoldChange)>1 & -log10(res$padj>0.05)],
        -log10(res$padj)[abs(res$log2FoldChange)>1 & -log10(res$padj>0.05)],
       col=alpha("#c0392b",.05))
 dev.off()
-
+#
 res = read.csv("CD41+_untreated_vs_CD41-_untreated.csv")
 
 pdf("CD41+_untreated_vs_CD41-_untreated.pdf")
-plot(res$log2FoldChange,-log10(res$padj),xlab=expression('Log'[2]*' Fold Change ( CD41+ UnTreated / CD41+ Treated ) '),
+plot(res$log2FoldChange,-log10(res$padj),xlab=expression('Log'[2]*' Fold Change ( CD41+ Untreated / CD41- Untreated ) '),
+              ylab=expression('-Log'[10]*' Q-values'),col=alpha("grey",.04))
+abline(v=-1,lty = 2,col="grey")
+abline(v=1,lty = 2,col="grey")
+abline(h=-log10(0.05),lty = 2,col="grey")
+points(res$log2FoldChange[abs(res$log2FoldChange)>1 & -log10(res$padj>0.05)],
+       -log10(res$padj)[abs(res$log2FoldChange)>1 & -log10(res$padj>0.05)],
+      col=alpha("#c0392b",.05))
+dev.off()
+#
+res = read.csv("CD41+_treated_vs_CD41-_treated.csv")
+
+pdf("CD41+_treated_vs_CD41-_treated.pdf")
+plot(res$log2FoldChange,-log10(res$padj),xlab=expression('Log'[2]*' Fold Change ( CD41+ treated / CD41- Treated ) '),
               ylab=expression('-Log'[10]*' Q-values'),col=alpha("grey",.04))
 abline(v=-1,lty = 2,col="grey")
 abline(v=1,lty = 2,col="grey")
@@ -192,21 +205,8 @@ points(res$log2FoldChange[abs(res$log2FoldChange)>1 & -log10(res$padj>0.05)],
       col=alpha("#c0392b",.05))
 dev.off()
 
-res = read.csv("CD41+_untreated_vs_CD41+_treated.csv")
 
-pdf("CD41+_untreated_vs_CD41+_treated.pdf")
-plot(res$log2FoldChange,-log10(res$padj),xlab=expression('Log'[2]*' Fold Change ( CD41+ UnTreated / CD41+ Treated ) '),
-              ylab=expression('-Log'[10]*' Q-values'),col=alpha("grey",.04))
-abline(v=-1,lty = 2,col="grey")
-abline(v=1,lty = 2,col="grey")
-abline(h=-log10(0.05),lty = 2,col="grey")
-points(res$log2FoldChange[abs(res$log2FoldChange)>1 & -log10(res$padj>0.05)],
-       -log10(res$padj)[abs(res$log2FoldChange)>1 & -log10(res$padj>0.05)],
-      col=alpha("#c0392b",.05))
-dev.off()
-
-
-
+#############################
 library(graphics)
 library(ggplot2)
 
