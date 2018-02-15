@@ -164,6 +164,8 @@ abline(h=-log10(0.05),lty = 2,col="grey")
 points(res$log2FoldChange[abs(res$log2FoldChange)>1 & -log10(res$padj>0.05)],
        -log10(res$padj)[abs(res$log2FoldChange)>1 & -log10(res$padj>0.05)],
       col=alpha("#c0392b",.05))
+legend("topright", paste("CD41+ untr:",length(which(res$log2FoldChange>1 & -log10(res$padj>0.05)))), bty="n") 
+legend("topleft", paste("CD41+ tr:",length(which(res$log2FoldChange<(-1) & -log10(res$padj>0.05)))), bty="n") 
 dev.off()
 #
 res = read.csv("CD41-_untreated_vs_CD41-_treated.csv")
@@ -177,6 +179,8 @@ abline(h=-log10(0.05),lty = 2,col="grey")
 points(res$log2FoldChange[abs(res$log2FoldChange)>1 & -log10(res$padj>0.05)],
        -log10(res$padj)[abs(res$log2FoldChange)>1 & -log10(res$padj>0.05)],
       col=alpha("#c0392b",.05))
+legend("topright", paste("CD41- untr:",length(which(res$log2FoldChange>1 & -log10(res$padj>0.05)))), bty="n") 
+legend("topleft", paste("CD41- tr:",length(which(res$log2FoldChange<(-1) & -log10(res$padj>0.05)))), bty="n") 
 dev.off()
 #
 res = read.csv("CD41+_untreated_vs_CD41-_untreated.csv")
@@ -190,6 +194,8 @@ abline(h=-log10(0.05),lty = 2,col="grey")
 points(res$log2FoldChange[abs(res$log2FoldChange)>1 & -log10(res$padj>0.05)],
        -log10(res$padj)[abs(res$log2FoldChange)>1 & -log10(res$padj>0.05)],
       col=alpha("#c0392b",.05))
+legend("topright", paste("CD41+ untr:",length(which(res$log2FoldChange>1 & -log10(res$padj>0.05)))), bty="n") 
+legend("topleft", paste("CD41- untr:",length(which(res$log2FoldChange<(-1) & -log10(res$padj>0.05)))), bty="n") 
 dev.off()
 #
 res = read.csv("CD41+_treated_vs_CD41-_treated.csv")
@@ -203,6 +209,8 @@ abline(h=-log10(0.05),lty = 2,col="grey")
 points(res$log2FoldChange[abs(res$log2FoldChange)>1 & -log10(res$padj>0.05)],
        -log10(res$padj)[abs(res$log2FoldChange)>1 & -log10(res$padj>0.05)],
       col=alpha("#c0392b",.05))
+legend("topright", paste("CD41+ tr:",length(which(res$log2FoldChange>1 & -log10(res$padj>0.05)))), bty="n") 
+legend("topleft", paste("CD41- tr:",length(which(res$log2FoldChange<(-1) & -log10(res$padj>0.05)))), bty="n")
 dev.off()
 
 
