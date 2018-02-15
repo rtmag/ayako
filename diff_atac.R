@@ -222,29 +222,29 @@ head(rownames(res[which(res$log2FoldChange>1 & res$padj<0.05),]))
 CD41_plus_untr_1 = t(matrix(unlist(strsplit(rownames(res[which(res$log2FoldChange>1 & res$padj<0.05),]),"_!_")),nrow=3))
 CD41_plus_tr_1 = t(matrix(unlist(strsplit(rownames(res[which(res$log2FoldChange<(-1) & res$padj<0.05),]),"_!_")),nrow=3))
 
-write.table("1_CD41+_untr_over_CD41+_tr.bed",CD41_plus_untr_1,sep="\t",quote=F,row.names=F,col.names=F)
-write.table("1_CD41+_tr_over_CD41+_untr.bed",CD41_plus_tr_1,sep="\t",quote=F,row.names=F,col.names=F)
+write.table(CD41_plus_untr_1,"1_CD41+_untr_over_CD41+_tr.bed",sep="\t",quote=F,row.names=F,col.names=F)
+write.table(CD41_plus_tr_1,"1_CD41+_tr_over_CD41+_untr.bed",sep="\t",quote=F,row.names=F,col.names=F)
 
-res = read.csv("2_CD41-_untreated_vs_CD41-_treated.csv")
+res = read.csv("2_CD41-_untreated_vs_CD41-_treated.csv",row.name=1)
 CD41_minus_untr_2 = t(matrix(unlist(strsplit(rownames(res[which(res$log2FoldChange>1 & res$padj<0.05),]),"_!_")),nrow=3))
 CD41_minus_tr_2 = t(matrix(unlist(strsplit(rownames(res[which(res$log2FoldChange<(-1) & res$padj<0.05),]),"_!_")),nrow=3))
 
-write.table("2_CD41-_untr_over_CD41-_tr.bed",CD41_minus_untr_2,sep="\t",quote=F,row.names=F,col.names=F)
-write.table("2_CD41-_tr_over_CD41-_untr.bed",CD41_minus_tr_2,sep="\t",quote=F,row.names=F,col.names=F)
+write.table(CD41_minus_untr_2,"2_CD41-_untr_over_CD41-_tr.bed",sep="\t",quote=F,row.names=F,col.names=F)
+write.table(CD41_minus_tr_2,"2_CD41-_tr_over_CD41-_untr.bed",sep="\t",quote=F,row.names=F,col.names=F)
 
-res = read.csv("3_CD41+_untreated_vs_CD41-_untreated.csv")
+res = read.csv("3_CD41+_untreated_vs_CD41-_untreated.csv",row.name=1)
 CD41_plus_untr_3 = t(matrix(unlist(strsplit(rownames(res[which(res$log2FoldChange>1 & res$padj<0.05),]),"_!_")),nrow=3))
 CD41_minus_untr_3 = t(matrix(unlist(strsplit(rownames(res[which(res$log2FoldChange<(-1) & res$padj<0.05),]),"_!_")),nrow=3))
 
-write.table("3_CD41+_untr_over_CD41-_untr.bed",CD41_plus_untr_3,sep="\t",quote=F,row.names=F,col.names=F)
-write.table("3_CD41-_untr_over_CD41+_untr.bed",CD41_minus_untr_3,sep="\t",quote=F,row.names=F,col.names=F)
+write.table(CD41_plus_untr_3,"3_CD41+_untr_over_CD41-_untr.bed",sep="\t",quote=F,row.names=F,col.names=F)
+write.table(CD41_minus_untr_3,"3_CD41-_untr_over_CD41+_untr.bed",sep="\t",quote=F,row.names=F,col.names=F)
 
-res = read.csv("4_CD41+_treated_vs_CD41-_treated.csv")
+res = read.csv("4_CD41+_treated_vs_CD41-_treated.csv",row.name=1)
 CD41_plus_tr_4 = t(matrix(unlist(strsplit(rownames(res[which(res$log2FoldChange>1 & res$padj<0.05),]),"_!_")),nrow=3))
 CD41_minus_tr_4 = t(matrix(unlist(strsplit(rownames(res[which(res$log2FoldChange<(-1) & res$padj<0.05),]),"_!_")),nrow=3))
 
-write.table("4_CD41+_tr_over_CD41-_tr.bed",CD41_plus_tr_4,sep="\t",quote=F,row.names=F,col.names=F)
-write.table("4_CD41-_tr_over_CD41+_tr.bed",CD41_minus_tr_4,sep="\t",quote=F,row.names=F,col.names=F)
+write.table(CD41_plus_tr_4,"4_CD41+_tr_over_CD41-_tr.bed",sep="\t",quote=F,row.names=F,col.names=F)
+write.table(CD41_minus_tr_4,"4_CD41-_tr_over_CD41+_tr.bed",sep="\t",quote=F,row.names=F,col.names=F)
 
 ###############################################################
 library(graphics)
