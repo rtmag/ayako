@@ -103,8 +103,10 @@ dLRT_res <- results(dLRT)
 dLRT_res$padj[is.na(dLRT_res$padj)]=1
 
 
-write.table(gsub("_!_","\t",rownames(dLRT_res[dLRT_res$padj<0.01,])),"ATAC-Seq_merged_LRT_FDR1.bed",quote=FALSE,col.names=FALSE,row.names=FALSE)
-write.table(gsub("_!_","\t",rownames(dLRT_res[dLRT_res$padj<0.05,])),"ATAC-Seq_merged_LRT_FDR5.bed",quote=FALSE,col.names=FALSE,row.names=FALSE)
+write.table(gsub("_!_","\t",rownames(dLRT_res[dLRT_res$padj<0.01,])),"ATAC-Seq_merged_LRT_FDR1.bed",
+            quote=FALSE,col.names=FALSE,row.names=FALSE)
+write.table(gsub("_!_","\t",rownames(dLRT_res[dLRT_res$padj<0.05,])),"ATAC-Seq_merged_LRT_FDR5.bed",
+            quote=FALSE,col.names=FALSE,row.names=FALSE)
 
 
 pdf("Diagnostic_design_pca.pdf")
@@ -282,7 +284,8 @@ res <- results(dds, contrast=c("cells","CD41_plus_untr","CD41_minus_tr"))
 
 library(graphics)
 pdf("Volcano_CD41+_untreated_vs_CD41-_treated.pdf")
-plot(res$log2FoldChange,-log10(res$padj),xlab=expression('Log'[2]*' Fold Change CD41+ untreated vs CD41- Treated'),ylab=expression('-Log'[10]*' Q-values'),nrpoints=0)
+plot(res$log2FoldChange,-log10(res$padj),xlab=expression('Log'[2]*' Fold Change CD41+ untreated vs CD41- Treated')
+     ,ylab=expression('-Log'[10]*' Q-values'),nrpoints=0)
 dev.off()
 
 ix=res$padj<0.05 & res$log2FoldChange<(-1)
@@ -296,14 +299,20 @@ write.table(gsub("_","\t",rownames(res[ix,])),"results/CD41+_untreated_over_CD41
 #################
 #### intersect
 
-intersectBed -a ~/ayako/ayako_dejavu/mm10_tss.bed -b CD41+_treated_over_CD41+_untreated.bed|cut -f4 > CD41+_treated_over_CD41+_untreated.tss
-intersectBed -a ~/ayako/ayako_dejavu/mm10_tss.bed -b CD41+_untreated_over_CD41+_treated.bed|cut -f4 > CD41+_untreated_over_CD41+_treated.tss
+intersectBed -a ~/ayako/ayako_dejavu/mm10_tss.bed -b CD41+_treated_over_CD41+_untreated.bed|cut -f4 > \
+CD41+_treated_over_CD41+_untreated.tss
+intersectBed -a ~/ayako/ayako_dejavu/mm10_tss.bed -b CD41+_untreated_over_CD41+_treated.bed|cut -f4 > \
+CD41+_untreated_over_CD41+_treated.tss
 
-intersectBed -a ~/ayako/ayako_dejavu/mm10_tss.bed -b CD41+_treated_over_CD41-_treated.bed|cut -f4 > CD41+_treated_over_CD41-_treated.tss
-intersectBed -a ~/ayako/ayako_dejavu/mm10_tss.bed -b CD41-_treated_over_CD41+_treated.bed|cut -f4 > CD41-_treated_over_CD41+_treated.tss
+intersectBed -a ~/ayako/ayako_dejavu/mm10_tss.bed -b CD41+_treated_over_CD41-_treated.bed|cut -f4 > \
+CD41+_treated_over_CD41-_treated.tss
+intersectBed -a ~/ayako/ayako_dejavu/mm10_tss.bed -b CD41-_treated_over_CD41+_treated.bed|cut -f4 > \
+CD41-_treated_over_CD41+_treated.tss
 
-intersectBed -a ~/ayako/ayako_dejavu/mm10_tss.bed -b CD41-_treated_over_CD41+_untreated.bed|cut -f4 > CD41-_treated_over_CD41+_untreated.tss
-intersectBed -a ~/ayako/ayako_dejavu/mm10_tss.bed -b CD41+_untreated_over_CD41-_treated.bed|cut -f4 > CD41+_untreated_over_CD41-_treated.tss
+intersectBed -a ~/ayako/ayako_dejavu/mm10_tss.bed -b CD41-_treated_over_CD41+_untreated.bed|cut -f4 > \
+CD41-_treated_over_CD41+_untreated.tss
+intersectBed -a ~/ayako/ayako_dejavu/mm10_tss.bed -b CD41+_untreated_over_CD41-_treated.bed|cut -f4 > \
+CD41+_untreated_over_CD41-_treated.tss
 ##
 #
 expr=read.table(pipe('grep -v "RNA-seq" ../GSE60101_1256271tableS2.txt'),sep="\t",header=T)
@@ -342,7 +351,8 @@ pdf("CD41+_untreated_VS_CD41+_treated.pdf")
 x=heatmap.3(rbind(ex1[ex1.clust$order,],ex2[ex2.clust$order,]),col=colors, hclustfun=hclustfunc, distfun=distfunc, 
             scale="row", trace="none",cexCol=1,KeyValueName="Expression",Rowv=FALSE, RowSideColors=rlab,dendrogram="none")
 
-legend('topright',legend=c("Open Chromatin in CD41+ treated","Open Chromatin in CD41+ untreated"),fill=c("#ffb3ba","#baffc9"),border=NA,bty = "n")
+legend('topright',legend=c("Open Chromatin in CD41+ treated","Open Chromatin in CD41+ untreated"),
+       fill=c("#ffb3ba","#baffc9"),border=NA,bty = "n")
 dev.off()
 ###
 
@@ -382,7 +392,8 @@ pdf("CD41-_treated_VS_CD41+_treated.pdf")
 x=heatmap.3(rbind(ex1,ex2[ex2.clust$order,]),col=colors, hclustfun=hclustfunc, distfun=distfunc, 
             scale="row", trace="none",cexCol=1,KeyValueName="Expression",Rowv=FALSE, RowSideColors=rlab,dendrogram="none")
 
-legend('topright',legend=c("Open Chromatin in CD41- treated","Open Chromatin in CD41+ treated"),fill=c("#bae1ff","#ffb3ba"),border=NA,bty = "n")
+legend('topright',legend=c("Open Chromatin in CD41- treated","Open Chromatin in CD41+ treated"),
+       fill=c("#bae1ff","#ffb3ba"),border=NA,bty = "n")
 dev.off()
 ###
 # CD41+ untreated VS CD41- treated
@@ -420,7 +431,8 @@ pdf("CD41-_treated_VS_CD41+_untreated.pdf")
 x=heatmap.3(rbind(ex1[ex1.clust$order,],ex2[ex2.clust$order,]),col=colors, hclustfun=hclustfunc, distfun=distfunc, 
             scale="row", trace="none",cexCol=1,KeyValueName="Expression",Rowv=FALSE, RowSideColors=rlab,dendrogram="none")
 
-legend('topright',legend=c("Open Chromatin in CD41- treated","Open Chromatin in CD41+ untreated"),fill=c("#bae1ff","#baffc9"),border=NA,bty = "n")
+legend('topright',legend=c("Open Chromatin in CD41- treated","Open Chromatin in CD41+ untreated"),
+       fill=c("#bae1ff","#baffc9"),border=NA,bty = "n")
 dev.off()
 
 ################################################################################################
@@ -430,12 +442,14 @@ source('https://raw.githubusercontent.com/rtmag/tumor-meth-pipe/master/heatmap3.
 countData=readRDS('atac_countdata.rds')
 
 
-colnames(countData)=c("CD41_plus_untr_1","CD41_plus_untr_2","CD41_plus_untr_3","CD41_plus_tr_1","CD41_plus_tr_2","CD41_minus_tr_1","CD41_minus_tr_2")
+colnames(countData)=c("CD41_plus_untr_1","CD41_plus_untr_2","CD41_plus_untr_3","CD41_plus_tr_1","CD41_plus_tr_2",
+                      "CD41_minus_tr_1","CD41_minus_tr_2")
 
 
 require(DESeq2)
 
-colData <- data.frame(group=c("CD41_plus_untr","CD41_plus_untr","CD41_plus_untr","CD41_plus_tr","CD41_plus_tr","CD41_minus_tr","CD41_minus_tr"))
+colData <- data.frame(group=c("CD41_plus_untr","CD41_plus_untr","CD41_plus_untr","CD41_plus_tr","CD41_plus_tr",
+                              "CD41_minus_tr","CD41_minus_tr"))
 dds <- DESeqDataSetFromMatrix(
        countData = countData,
        colData = colData,
@@ -450,7 +464,8 @@ saveRDS(dLRT_vsd,"dLRT_vsd.rds")
 dLRT_res=readRDS('dLRT_res.rds')
 dLRT_vsd=readRDS('dLRT_vsd.rds')
 ###FDR
-#write.table(gsub("_","\t",rownames(dLRT_res[dLRT_res$padj<0.01 & !is.na(dLRT_res$padj),])),"LRT_FDR1.bed",quote=FALSE,col.names=FALSE,row.names=FALSE)
+#write.table(gsub("_","\t",rownames(dLRT_res[dLRT_res$padj<0.01 & !is.na(dLRT_res$padj),])),"LRT_FDR1.bed",
+#quote=FALSE,col.names=FALSE,row.names=FALSE)
 #
 #tss=read.table(pipe("intersectBed -a ../mm10_tss.bed -b LRT_FDR5.bed -wa -wb"),sep='\t',stringsAsFactors=F)
 tss=read.table(pipe("intersectBed -a ../mm10_tss.bed -b LRT_FDR1.bed -wa -wb"),sep='\t',stringsAsFactors=F)
@@ -483,7 +498,8 @@ design<-data.frame(cells = c("CD41_plus_untr","CD41_plus_untr","CD41_plus_untr",
 dds <- DESeqDataSetFromMatrix(countData = countData[,c(1,2,3,4,5)], colData = design, design = ~ cells)
 dds <- DESeq(dds)
 res <- results(dds, contrast=c("cells","CD41_plus_untr","CD41_plus_tr"))
-write.table(gsub("_","\t",rownames(res[res$padj<0.01 & !is.na(res$padj),])),"CD41+_trVSuntr_FDR1.bed",quote=FALSE,col.names=FALSE,row.names=FALSE)
+write.table(gsub("_","\t",rownames(res[res$padj<0.01 & !is.na(res$padj),])),"CD41+_trVSuntr_FDR1.bed",
+            quote=FALSE,col.names=FALSE,row.names=FALSE)
 
 tss=read.table(pipe("intersectBed -a ../mm10_tss.bed -b CD41+_trVSuntr_FDR1.bed -wa -wb"),sep='\t',stringsAsFactors=F)
 expr=read.table(pipe('grep -v "RNA-seq" ../GSE60101_1256271tableS2.txt'),sep="\t",header=T,stringsAsFactors=F)
@@ -521,7 +537,8 @@ dds <- DESeqDataSetFromMatrix(countData = countData[,c(4,5,6,7)], colData = desi
 dds <- DESeq(dds)
 res <- results(dds, contrast=c("cells","CD41_minus_tr","CD41_plus_tr"))
 
-write.table(gsub("_","\t",rownames(res[res$padj<0.05 & !is.na(res$padj),])),"CD41_+VS-_FDR5.bed",quote=FALSE,col.names=FALSE,row.names=FALSE)
+write.table(gsub("_","\t",rownames(res[res$padj<0.05 & !is.na(res$padj),])),"CD41_+VS-_FDR5.bed",
+            quote=FALSE,col.names=FALSE,row.names=FALSE)
 
 tss=read.table(pipe("intersectBed -a ../mm10_tss.bed -b CD41_+VS-_FDR5.bed -wa -wb"),sep='\t',stringsAsFactors=F)
 expr=read.table(pipe('grep -v "RNA-seq" ../GSE60101_1256271tableS2.txt'),sep="\t",header=T,stringsAsFactors=F)
@@ -624,13 +641,19 @@ dev.off()
 
 #############
 
-intersectBed -a ../../mm10_tss.bed -b CD41+_treated_over_CD41+_untreated.bed -wa -wb|cut -f4| grep -f - ../../GSE60101_1256271tableS2.txt|cat header.txt - > CD41+_treated_over_CD41+_untreated_genes.txt
-intersectBed -a ../../mm10_tss.bed -b CD41+_treated_over_CD41-_treated.bed -wa -wb|cut -f4| grep -f - ../../GSE60101_1256271tableS2.txt|cat header.txt - > CD41+_treated_over_CD41-_treated_genes.txt
-intersectBed -a ../../mm10_tss.bed -b CD41+_untreated_over_CD41+_treated.bed -wa -wb|cut -f4| grep -f - ../../GSE60101_1256271tableS2.txt|cat header.txt - > CD41+_untreated_over_CD41+_treated_genes.txt
-intersectBed -a ../../mm10_tss.bed -b CD41+_untreated_over_CD41-_treated.bed -wa -wb|cut -f4| grep -f - ../../GSE60101_1256271tableS2.txt|cat header.txt - > CD41+_untreated_over_CD41-_treated_genes.txt
+intersectBed -a ../../mm10_tss.bed -b CD41+_treated_over_CD41+_untreated.bed -wa -wb| \
+cut -f4| grep -f - ../../GSE60101_1256271tableS2.txt|cat header.txt - > CD41+_treated_over_CD41+_untreated_genes.txt
+intersectBed -a ../../mm10_tss.bed -b CD41+_treated_over_CD41-_treated.bed -wa -wb| \
+cut -f4| grep -f - ../../GSE60101_1256271tableS2.txt|cat header.txt - > CD41+_treated_over_CD41-_treated_genes.txt
+intersectBed -a ../../mm10_tss.bed -b CD41+_untreated_over_CD41+_treated.bed -wa -wb| \
+cut -f4| grep -f - ../../GSE60101_1256271tableS2.txt|cat header.txt - > CD41+_untreated_over_CD41+_treated_genes.txt
+intersectBed -a ../../mm10_tss.bed -b CD41+_untreated_over_CD41-_treated.bed -wa -wb| \
+cut -f4| grep -f - ../../GSE60101_1256271tableS2.txt|cat header.txt - > CD41+_untreated_over_CD41-_treated_genes.txt
 
-intersectBed -a ../../mm10_tss.bed -b CD41-_treated_over_CD41+_treated.bed -wa -wb|cut -f4| grep -f - ../../GSE60101_1256271tableS2.txt|cat header.txt - > CD41-_treated_over_CD41+_treated_genes.txt
-intersectBed -a ../../mm10_tss.bed -b CD41-_treated_over_CD41+_untreated.bed -wa -wb|cut -f4| grep -f - ../../GSE60101_1256271tableS2.txt|cat header.txt - > CD41-_treated_over_CD41+_untreated_genes.txt
+intersectBed -a ../../mm10_tss.bed -b CD41-_treated_over_CD41+_treated.bed -wa -wb| \
+cut -f4| grep -f - ../../GSE60101_1256271tableS2.txt|cat header.txt - > CD41-_treated_over_CD41+_treated_genes.txt
+intersectBed -a ../../mm10_tss.bed -b CD41-_treated_over_CD41+_untreated.bed -wa -wb| \
+cut -f4| grep -f - ../../GSE60101_1256271tableS2.txt|cat header.txt - > CD41-_treated_over_CD41+_untreated_genes.txt
 
 
 
