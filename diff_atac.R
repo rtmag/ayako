@@ -163,11 +163,11 @@ plot(res$log2FoldChange,-log10(res$padj),xlab=expression('Log'[2]*' Fold Change 
 abline(v=-1,lty = 2,col="grey")
 abline(v=1,lty = 2,col="grey")
 abline(h=-log10(0.05),lty = 2,col="grey")
-points(res$log2FoldChange[abs(res$log2FoldChange)>1 & -log10(res$padj<0.05)],
-       -log10(res$padj)[abs(res$log2FoldChange)>1 & -log10(res$padj<0.05)],
+points(res$log2FoldChange[abs(res$log2FoldChange)>1 & res$padj<0.05],
+       -log10(res$padj)[abs(res$log2FoldChange)>1 & res$padj<0.05],
       col=alpha("#c0392b",.05))
-legend("topright", paste("CD41+ untr:",length(which(res$log2FoldChange>1 & -log10(res$padj<0.05)))), bty="n") 
-legend("topleft", paste("CD41+ tr:",length(which(res$log2FoldChange<(-1) & -log10(res$padj<0.05)))), bty="n") 
+legend("topright", paste("CD41+ untr:",length(which(res$log2FoldChange>1 & res$padj<0.05))), bty="n") 
+legend("topleft", paste("CD41+ tr:",length(which(res$log2FoldChange<(-1) & res$padj<0.05))), bty="n") 
 dev.off()
 #
 res = read.csv("2_CD41-_untreated_vs_CD41-_treated.csv")
@@ -178,11 +178,11 @@ plot(res$log2FoldChange,-log10(res$padj),xlab=expression('Log'[2]*' Fold Change 
 abline(v=-1,lty = 2,col="grey")
 abline(v=1,lty = 2,col="grey")
 abline(h=-log10(0.05),lty = 2,col="grey")
-points(res$log2FoldChange[abs(res$log2FoldChange)>1 & -log10(res$padj<0.05)],
-       -log10(res$padj)[abs(res$log2FoldChange)>1 & -log10(res$padj<0.05)],
+points(res$log2FoldChange[abs(res$log2FoldChange)>1 & res$padj<0.05],
+       -log10(res$padj)[abs(res$log2FoldChange)>1 & res$padj<0.05],
       col=alpha("#c0392b",.05))
-legend("topright", paste("CD41- untr:",length(which(res$log2FoldChange>1 & -log10(res$padj<0.05)))), bty="n") 
-legend("topleft", paste("CD41- tr:",length(which(res$log2FoldChange<(-1) & -log10(res$padj<0.05)))), bty="n") 
+legend("topright", paste("CD41- untr:",length(which(res$log2FoldChange>1 & res$padj<0.05))), bty="n") 
+legend("topleft", paste("CD41- tr:",length(which(res$log2FoldChange<(-1) & res$padj<0.05))), bty="n") 
 dev.off()
 #
 res = read.csv("3_CD41+_untreated_vs_CD41-_untreated.csv")
@@ -193,11 +193,11 @@ plot(res$log2FoldChange,-log10(res$padj),xlab=expression('Log'[2]*' Fold Change 
 abline(v=-1,lty = 2,col="grey")
 abline(v=1,lty = 2,col="grey")
 abline(h=-log10(0.05),lty = 2,col="grey")
-points(res$log2FoldChange[abs(res$log2FoldChange)>1 & -log10(res$padj<0.05)],
-       -log10(res$padj)[abs(res$log2FoldChange)>1 & -log10(res$padj<0.05)],
+points(res$log2FoldChange[abs(res$log2FoldChange)>1 & res$padj<0.05],
+       -log10(res$padj)[abs(res$log2FoldChange)>1 & res$padj<0.05],
       col=alpha("#c0392b",.05))
-legend("topright", paste("CD41+ untr:",length(which(res$log2FoldChange>1 & -log10(res$padj<0.05)))), bty="n") 
-legend("topleft", paste("CD41- untr:",length(which(res$log2FoldChange<(-1) & -log10(res$padj<0.05)))), bty="n") 
+legend("topright", paste("CD41+ untr:",length(which(res$log2FoldChange>1 & res$padj<0.05))), bty="n") 
+legend("topleft", paste("CD41- untr:",length(which(res$log2FoldChange<(-1) & res$padj<0.05))), bty="n") 
 dev.off()
 #
 res = read.csv("4_CD41+_treated_vs_CD41-_treated.csv")
@@ -208,25 +208,43 @@ plot(res$log2FoldChange,-log10(res$padj),xlab=expression('Log'[2]*' Fold Change 
 abline(v=-1,lty = 2,col="grey")
 abline(v=1,lty = 2,col="grey")
 abline(h=-log10(0.05),lty = 2,col="grey")
-points(res$log2FoldChange[abs(res$log2FoldChange)>1 & -log10(res$padj<0.05)],
-       -log10(res$padj)[abs(res$log2FoldChange)>1 & -log10(res$padj<0.05)],
+points(res$log2FoldChange[abs(res$log2FoldChange)>1 & res$padj<0.05],
+       -log10(res$padj)[abs(res$log2FoldChange)>1 & res$padj<0.05],
       col=alpha("#c0392b",.05))
-legend("topright", paste("CD41+ tr:",length(which(res$log2FoldChange>1 & -log10(res$padj<0.05)))), bty="n") 
-legend("topleft", paste("CD41- tr:",length(which(res$log2FoldChange<(-1) & -log10(res$padj<0.05)))), bty="n")
+legend("topright", paste("CD41+ tr:",length(which(res$log2FoldChange>1 & res$padj<0.05))), bty="n") 
+legend("topleft", paste("CD41- tr:",length(which(res$log2FoldChange<(-1) & res$padj<0.05))), bty="n")
 dev.off()
 
 
 ##############################################################
-res = read.csv("1_CD41+_untreated_vs_CD41+_treated.csv")
+res = read.csv("1_CD41+_untreated_vs_CD41+_treated.csv",row.name=1)
+head(rownames(res[which(res$log2FoldChange>1 & res$padj<0.05),]))
+CD41_plus_untr_1 = t(matrix(unlist(strsplit(rownames(res[which(res$log2FoldChange>1 & res$padj<0.05),]),"_!_")),nrow=3))
+CD41_plus_tr_1 = t(matrix(unlist(strsplit(rownames(res[which(res$log2FoldChange<(-1) & res$padj<0.05),]),"_!_")),nrow=3))
 
-abs(res$log2FoldChange)>1 & -log10(res$padj<0.05)
-
-abs(res$log2FoldChange)>1 & -log10(res$padj<0.05)
+write.table("1_CD41+_untr_over_CD41+_tr.bed",CD41_plus_untr_1,sep="\t",quote=F,row.names=F,col.names=F)
+write.table("1_CD41+_tr_over_CD41+_untr.bed",CD41_plus_tr_1,sep="\t",quote=F,row.names=F,col.names=F)
 
 res = read.csv("2_CD41-_untreated_vs_CD41-_treated.csv")
-res = read.csv("3_CD41+_untreated_vs_CD41-_untreated.csv")
-res = read.csv("4_CD41+_treated_vs_CD41-_treated.csv")
+CD41_minus_untr_2 = t(matrix(unlist(strsplit(rownames(res[which(res$log2FoldChange>1 & res$padj<0.05),]),"_!_")),nrow=3))
+CD41_minus_tr_2 = t(matrix(unlist(strsplit(rownames(res[which(res$log2FoldChange<(-1) & res$padj<0.05),]),"_!_")),nrow=3))
 
+write.table("2_CD41-_untr_over_CD41-_tr.bed",CD41_minus_untr_2,sep="\t",quote=F,row.names=F,col.names=F)
+write.table("2_CD41-_tr_over_CD41-_untr.bed",CD41_minus_tr_2,sep="\t",quote=F,row.names=F,col.names=F)
+
+res = read.csv("3_CD41+_untreated_vs_CD41-_untreated.csv")
+CD41_plus_untr_3 = t(matrix(unlist(strsplit(rownames(res[which(res$log2FoldChange>1 & res$padj<0.05),]),"_!_")),nrow=3))
+CD41_minus_untr_3 = t(matrix(unlist(strsplit(rownames(res[which(res$log2FoldChange<(-1) & res$padj<0.05),]),"_!_")),nrow=3))
+
+write.table("3_CD41+_untr_over_CD41-_untr.bed",CD41_plus_untr_3,sep="\t",quote=F,row.names=F,col.names=F)
+write.table("3_CD41-_untr_over_CD41+_untr.bed",CD41_minus_untr_3,sep="\t",quote=F,row.names=F,col.names=F)
+
+res = read.csv("4_CD41+_treated_vs_CD41-_treated.csv")
+CD41_plus_tr_4 = t(matrix(unlist(strsplit(rownames(res[which(res$log2FoldChange>1 & res$padj<0.05),]),"_!_")),nrow=3))
+CD41_minus_tr_4 = t(matrix(unlist(strsplit(rownames(res[which(res$log2FoldChange<(-1) & res$padj<0.05),]),"_!_")),nrow=3))
+
+write.table("4_CD41+_tr_over_CD41-_tr.bed",CD41_plus_tr_4,sep="\t",quote=F,row.names=F,col.names=F)
+write.table("4_CD41-_tr_over_CD41+_tr.bed",CD41_minus_tr_4,sep="\t",quote=F,row.names=F,col.names=F)
 
 ###############################################################
 library(graphics)
