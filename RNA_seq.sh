@@ -144,7 +144,7 @@
 --readFilesIn /root/ayako/rna/Ctrl_CD41minus1_1.fastq.gz \
 /root/ayako/rna/Ctrl_CD41minus1_2.fastq.gz \
 --outSAMtype BAM SortedByCoordinate \
---outSAMunmapped Within \
+--outReadsUnmapped Fastx \
 --outFileNamePrefix /root/ayako/test/Ctrl_CD41minus1_
 
 ~/myPrograms/STAR/bin/Linux_x86_64/STAR --genomeDir /root/ayako/ref/mm10_star_sjdbO100/ --genomeLoad Remove
