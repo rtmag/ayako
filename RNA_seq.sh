@@ -147,5 +147,15 @@
 --outReadsUnmapped Fastx \
 --outFileNamePrefix /root/ayako/test/Ctrl_CD41minus1_
 
+~/myPrograms/STAR/bin/Linux_x86_64/STAR --genomeDir /root/resources/star_hg38_overhang100/ \
+--readFilesCommand zcat \
+--runThreadN 40 \
+--readFilesIn /root/ayako/test/Ctrl_CD41minus1_Unmapped.out.mate1 \
+/root/ayako/test/Ctrl_CD41minus1_Unmapped.out.mate2 \
+--outSAMtype BAM SortedByCoordinate \
+--outReadsUnmapped Fastx \
+--outFileNamePrefix /root/ayako/test/HG38_Ctrl_CD41minus1_
+
+
 ~/myPrograms/STAR/bin/Linux_x86_64/STAR --genomeDir /root/ayako/ref/mm10_star_sjdbO100/ --genomeLoad Remove
 #
