@@ -139,14 +139,13 @@
 
 
 ~/myPrograms/STAR/bin/Linux_x86_64/STAR --genomeDir /root/ayako/ref/mm10_star_sjdbO100/ \
---genomeLoad LoadAndKeep --limitBAMsortRAM 10000000000 \
 --readFilesCommand zcat \
 --runThreadN 40 \
---readFilesIn /root/ayako/rna/Ctrl_CD41minus3_1.fastq.gz \
-/root/ayako/rna/Ctrl_CD41minus3_2.fastq.gz \
+--readFilesIn /root/ayako/rna/Ctrl_CD41minus1_1.fastq.gz \
+/root/ayako/rna/Ctrl_CD41minus1_2.fastq.gz \
 --outSAMtype BAM SortedByCoordinate \
---outFilterScoreMinOverLread 0.55 --outFilterMatchNminOverLread 0.55 \
---outFileNamePrefix /root/ayako/bam/TEST_min120_Ctrl_CD41minus3_
+--outSAMunmapped Within \
+--outFileNamePrefix /root/ayako/test/Ctrl_CD41minus1_
 
 ~/myPrograms/STAR/bin/Linux_x86_64/STAR --genomeDir /root/ayako/ref/mm10_star_sjdbO100/ --genomeLoad Remove
 #
