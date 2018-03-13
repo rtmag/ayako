@@ -160,3 +160,16 @@
 #
 
 bamCoverage -b HG38_Ctrl_CD41minus1_Aligned.sortedByCoord.out.bam -o HG38_Ctrl_CD41minus1.bw
+
+samtools sort -n mapped.bam > mapped_sortbyname.bam
+
+bamToFastq -i mapped_sortbyname.bam -fq mapped_1.fq -fq2 mapped_2.fq
+
+~/myPrograms/STAR/bin/Linux_x86_64/STAR --genomeDir /root/resources/star_hg38_overhang100/ \
+--runThreadN 40 \
+--readFilesIn mapped_1.fq \
+mapped_2.fq \
+--outSAMtype BAM SortedByCoordinate \
+--outReadsUnmapped Fastx \
+--outFileNamePrefix /root/ayako/test/HG38_mm10-mapped_Ctrl_CD41minus1_
+
