@@ -158,3 +158,5 @@
 
 ~/myPrograms/STAR/bin/Linux_x86_64/STAR --genomeDir /root/ayako/ref/mm10_star_sjdbO100/ --genomeLoad Remove
 #
+
+bamCoverage -b HG38_Ctrl_CD41minus1_Aligned.sortedByCoord.out.bam -o HG38_Ctrl_CD41minus1.bw
