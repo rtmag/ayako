@@ -43,3 +43,90 @@ plotHeatmap --xAxisLabel "" --refPointLabel "ATAC Peak" --colorMap Blues -m /roo
 
 ##
 ##
+
+cat 1_CD41+_tr_over_CD41+_untr.bed > combined_CD41+_tr_vs_CD41+_untr.bed
+echo "#CD41+ treated Open regions" >> combined_CD41+_tr_vs_CD41+_untr.bed
+cat 1_CD41+_untr_over_CD41+_tr.bed >> combined_CD41+_tr_vs_CD41+_untr.bed
+echo "#CD41+ untreated Open regions" >> combined_CD41+_tr_vs_CD41+_untr.bed
+
+cat 2_CD41-_tr_over_CD41-_untr.bed > combined_CD41-_tr_vs_CD41-_untr.bed
+echo "#CD41- treated Open regions" >> combined_CD41-_tr_vs_CD41-_untr.bed
+cat 2_CD41-_untr_over_CD41-_tr.bed >> combined_CD41-_tr_vs_CD41-_untr.bed
+echo "#CD41- untreated Open regions" >> combined_CD41-_tr_vs_CD41-_untr.bed
+
+cat 3_CD41-_untr_over_CD41+_untr.bed > combined_CD41-_untr_vs_CD41+_untr.bed
+echo "#CD41- untreated Open regions" >> combined_CD41-_untr_vs_CD41+_untr.bed
+cat 3_CD41+_untr_over_CD41-_untr.bed >> combined_CD41-_untr_vs_CD41+_untr.bed
+echo "#CD41+ untreated Open regions" >> combined_CD41-_untr_vs_CD41+_untr.bed
+
+cat 4_CD41-_tr_over_CD41+_tr.bed > combined_CD41-_tr_vs_CD41+_tr.bed
+echo "#CD41- treated Open regions" >> combined_CD41-_tr_vs_CD41+_tr.bed
+cat 4_CD41+_tr_over_CD41-_tr.bed >> combined_CD41-_tr_vs_CD41+_tr.bed
+echo "#CD41+ treated Open regions" >> combined_CD41-_tr_vs_CD41+_tr.bed
+
+#####################################
+
+
+computeMatrix reference-point \
+-S /root/ayako/ayako_dejavu/bw/CD41+_tr_1.bw \
+/root/ayako/ayako_dejavu/bw/CD41+_tr_2.bw \
+/root/ayako/ayako_dejavu/bw/CD41+_untr_1.bw \
+/root/ayako/ayako_dejavu/bw/CD41+_untr_2.bw \
+/root/ayako/ayako_dejavu/bw/CD41+_untr_3.bw \
+-R combined_CD41+_tr_vs_CD41+_untr.bed --referencePoint center \
+--sortRegions descend -bs 20 -a 3000 -b 3000 -p 40 -out combined_CD41+_tr_vs_CD41+_untr.mat
+
+
+computeMatrix reference-point \
+-S \
+/root/ayako/ayako_dejavu/bw/CD41-_tr_1.bw \
+/root/ayako/ayako_dejavu/bw/CD41-_tr_2.bw \
+/root/ayako/ayako_dejavu/bw/CD41-_untr_1.bw \
+/root/ayako/ayako_dejavu/bw/CD41-_untr_2.bw \
+-R combined_CD41-_tr_vs_CD41-_untr.bed --referencePoint center \
+--sortRegions descend -bs 20 -a 3000 -b 3000 -p 40 -out combined_CD41-_tr_vs_CD41-_untr.mat
+
+
+computeMatrix reference-point \
+-S \
+/root/ayako/ayako_dejavu/bw/CD41-_untr_1.bw \
+/root/ayako/ayako_dejavu/bw/CD41-_untr_2.bw \
+/root/ayako/ayako_dejavu/bw/CD41+_untr_1.bw \
+/root/ayako/ayako_dejavu/bw/CD41+_untr_2.bw \
+/root/ayako/ayako_dejavu/bw/CD41+_untr_3.bw \
+-R combined_CD41-_untr_vs_CD41+_untr.bed --referencePoint center \
+--sortRegions descend -bs 20 -a 3000 -b 3000 -p 40 -out combined_CD41-_untr_vs_CD41+_untr.mat
+
+
+computeMatrix reference-point \
+-S \
+/root/ayako/ayako_dejavu/bw/CD41-_tr_1.bw \
+/root/ayako/ayako_dejavu/bw/CD41-_tr_2.bw \
+/root/ayako/ayako_dejavu/bw/CD41+_tr_1.bw \
+/root/ayako/ayako_dejavu/bw/CD41+_tr_2.bw \
+-R combined_CD41-_tr_vs_CD41+_tr.bed --referencePoint center \
+--sortRegions descend -bs 20 -a 3000 -b 3000 -p 40 -out combined_CD41-_tr_vs_CD41+_tr.mat
+
+
+plotHeatmap --xAxisLabel "" --yAxisLabel "" --refPointLabel "ATAC-Seq Peak" --colorMap RdBu_r \
+-m combined_CD41+_tr_vs_CD41+_untr.mat \
+ --samplesLabel "CD41+ treated 1" "CD41+ treated 2" "CD41+ untreated 1" "CD41+ untreated 2" "CD41+ untreated 3"  \
+-out combined_CD41+_tr_vs_CD41+_untr.pdf
+
+plotHeatmap --xAxisLabel "" --yAxisLabel "" --refPointLabel "ATAC-Seq Peak" --colorMap RdBu_r \
+-m combined_CD41-_tr_vs_CD41-_untr.mat \
+ --samplesLabel "CD41- treated 1" "CD41- treated 2" "CD41- untreated 1" "CD41- untreated 2"  \
+-out combined_CD41-_tr_vs_CD41-_untr.pdf
+
+plotHeatmap --xAxisLabel "" --yAxisLabel "" --refPointLabel "ATAC-Seq Peak" --colorMap RdBu_r \
+-m combined_CD41-_untr_vs_CD41+_untr.mat \
+ --samplesLabel "CD41- untreated 1" "CD41- untreated 2" "CD41+ untreated 1" "CD41+ untreated 2" "CD41+ untreated 3"  \
+-out combined_CD41-_untr_vs_CD41+_untr.pdf
+
+plotHeatmap --xAxisLabel "" --yAxisLabel "" --refPointLabel "ATAC-Seq Peak" --colorMap RdBu_r \
+-m combined_CD41-_tr_vs_CD41+_tr.mat \
+ --samplesLabel "CD41- treated 1" "CD41- treated 2" "CD41+ treated 1" "CD41+ treated 2" \
+-out combined_CD41-_tr_vs_CD41+_tr.pdf
+#############
+##
+#
