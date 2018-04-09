@@ -130,3 +130,23 @@ plotHeatmap --xAxisLabel "" --yAxisLabel "" --refPointLabel "ATAC-Seq Peak" --co
 #############
 ##
 #
+
+plotHeatmap --xAxisLabel "" --yAxisLabel "" --refPointLabel "ATAC-Seq Peak" --colorMap Reds \
+-m combined_CD41+_tr_vs_CD41+_untr.mat \
+ --samplesLabel "CD41+ treated 1" "CD41+ treated 2" "CD41+ untreated 1" "CD41+ untreated 2" "CD41+ untreated 3"  \
+-out combined_reds_CD41+_tr_vs_CD41+_untr.pdf
+
+plotHeatmap --xAxisLabel "" --yAxisLabel "" --refPointLabel "ATAC-Seq Peak" --colorMap Reds \
+-m combined_CD41-_tr_vs_CD41-_untr.mat \
+ --samplesLabel "CD41- treated 1" "CD41- treated 2" "CD41- untreated 1" "CD41- untreated 2"  \
+-out combined_reds_CD41-_tr_vs_CD41-_untr.pdf
+
+plotHeatmap --xAxisLabel "" --yAxisLabel "" --refPointLabel "ATAC-Seq Peak" --colorMap Reds \
+-m combined_CD41-_untr_vs_CD41+_untr.mat \
+ --samplesLabel "CD41- untreated 1" "CD41- untreated 2" "CD41+ untreated 1" "CD41+ untreated 2" "CD41+ untreated 3"  \
+-out combined_reds_CD41-_untr_vs_CD41+_untr.pdf
+
+plotHeatmap --xAxisLabel "" --yAxisLabel "" --refPointLabel "ATAC-Seq Peak" --colorMap Reds \
+-m combined_CD41-_tr_vs_CD41+_tr.mat \
+ --samplesLabel "CD41- treated 1" "CD41- treated 2" "CD41+ treated 1" "CD41+ treated 2" \
+-out combined_reds_CD41-_tr_vs_CD41+_tr.pdf
