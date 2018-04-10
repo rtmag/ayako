@@ -53,6 +53,30 @@ pdf("Diagnostic_pca.pdf")
 plotPCA(dLRT_vsd,ntop=50000,intgroup=c("group"))
 dev.off()
 
+# rm2
+countData=readRDS("ayako_bulk_rna_counts.rds")
+library(Rsubread)
+options(scipen=999)
+library(DESeq2)
+#
+design<-data.frame(group=c("Ctrl_CD41minus","Ctrl_CD41minus",
+                           "Ctrl_CD41plus","Ctrl_CD41plus","Ctrl_CD41plus",
+                           "Thpo_CD41minus","Thpo_CD41minus","Thpo_CD41minus",
+                           "Thpo_CD41plus","Thpo_CD41plus","Thpo_CD41plus"
+                           ) )
+
+
+dLRT <- DESeqDataSetFromMatrix(countData = countData[,c(1:2,4:12)], colData = design, design = ~ group )
+dLRT <- DESeq(dLRT, test="LRT", reduced=~1)
+dLRT_vsd <- varianceStabilizingTransformation(dLRT)
+vsd = assay(dLRT_vsd)
+
+pdf("Diagnostic_pca_rm2.pdf")
+plotPCA(dLRT_vsd,ntop=50000,intgroup=c("group"))
+dev.off()
+
+
+
 # Boxplotter
 
 boxploter=function(name_gene){
