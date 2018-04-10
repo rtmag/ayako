@@ -75,7 +75,7 @@ boxplot( values ~ names, data = bdata,
 
 
 pdf("boxplot_cell_cycle_genes.pdf")
-par(mfrow=c(3,3))
+par(mfrow=c(3,3),cex.axis=.80)
 boxploter("Ccna1")
 boxploter("Ccnb1")
 boxploter("Ccne1")
@@ -92,7 +92,7 @@ dev.off()
 
 
 pdf("boxplot_major_HSC_genes.pdf")
-par(mfrow=c(3,3))
+par(mfrow=c(3,3),cex.axis=.80)
 boxploter("Kit")
 boxploter("Procr")
 boxploter("Mapk14")
@@ -139,7 +139,7 @@ dev.off()
 ###################################
 
 pdf("boxplot_major_MK_genes.pdf")
-par(mfrow=c(3,3))
+par(mfrow=c(3,3),cex.axis=.80)
 boxploter("Mkl1")
 boxploter("Mpl")
 boxploter("Nfe2")
@@ -170,7 +170,7 @@ boxploter("Pf4")
 dev.off()
 #
 pdf("boxplot_TPO_signal_genes.pdf")
-par(mfrow=c(3,3))
+par(mfrow=c(3,3),cex.axis=.80)
 boxploter("Jak2")
 boxploter("Ptpn6")
 boxploter("Ptpn11")
@@ -195,4 +195,56 @@ boxploter("Gp5")
 boxploter("Gp6")
 boxploter("Gp9")
 dev.off()
+#
 
+pdf("boxplot_mitochondrial_genes.pdf")
+par(mfrow=c(3,3),cex.axis=.80)
+boxploter("Atg12")
+boxploter("Atg5")
+boxploter("Atg7")
+
+boxploter("Atp5a1")
+boxploter("Cox5a")
+boxploter("Cyc1")
+
+boxploter("Cycs")
+boxploter("Dnm1")
+boxploter("Dnm1l")
+#
+boxploter("Flcn")
+boxploter("Foxo3")
+boxploter("Hif1a")
+
+boxploter("Ldha")
+boxploter("Map1lc3a")
+boxploter("Mff")
+
+boxploter("Mfn1")
+boxploter("Mfn2")
+boxploter("Mtor")
+#
+boxploter("Nfe2l2")
+boxploter("Nrf1")
+boxploter("Opa1")
+
+boxploter("Park2")
+boxploter("Pdk2")
+boxploter("Pdk4")
+
+boxploter("Pink1")
+boxploter("Pparg")
+boxploter("Ppargc1a")
+#
+boxploter("Sdha")
+boxploter("Sdhb")
+boxploter("Sdhc")
+
+boxploter("Tfam")
+boxploter("Tfe3")
+boxploter("Ldb1")
+
+boxploter("Mitf")
+boxploter("Nfatc1")
+boxploter("Pik3r1")
+#
+dev.off()
