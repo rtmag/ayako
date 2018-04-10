@@ -57,17 +57,38 @@ dev.off()
 
 boxploter=function(name_gene){
 bdata= vsd[rownames(countData) %in% name_gene]
-                                 
-Ctrl_CD41minus = 1:3
-Ctrl_CD41plus = 4:6
-Thpo_CD41minus = 7:9
-Thpo_CD41plus = 10:12
-Ctrl_neg = 13
   
-boxplot(bdata[Ctrl_CD41plus],bdata[Thpo_CD41plus],bdata[Ctrl_CD41minus],bdata[Thpo_CD41minus],bdata[Ctrl_neg],
-        names=c("Ctrl_CD41plus","Thpo_CD41plus","Ctrl_CD41minus","Thpo_CD41minus","Ctrl_neg"), 
-        main = name_gene, col=c("#ffb3ba","#baffc9","#bae1ff"),outline=F)
+bdata= data.frame( names = c(rep("CD41-_Ctrl",3),
+                     rep("CD41+_Ctrl",3),
+                     rep("CD41-_Thpo",3),
+                     rep("CD41+_Thpo",3),
+                     "Ctrl_neg" ) ,
+                    values= bdata)
+  
+bdata$names<-factor(bdata$names, levels=c("CD41+_Ctrl", "CD41+_Thpo", "CD41-_Ctrl","CD41-_Thpo","Ctrl_neg"))
+  
+boxplot( values ~ names, data = bdata,
+        main = name_gene, col=c("#ffb3ba","#ffdfba","#baffc9","#bae1ff","#ffffba"),outline=F,las=2,cex.names=.5)
+  stripchart(values ~ names, vertical = TRUE, data = bdata, 
+    method = "jitter", add = TRUE, pch = 20, col = 'red')
 } 
+
+
+pdf("boxplot_cell_cycle_genes.pdf")
+par(mfrow=c(3,3))
+boxploter("Ccna1")
+boxploter("Ccnb1")
+boxploter("Ccne1")
+
+boxploter("Cdkn1a")
+boxploter("Cdkn1b")
+boxploter("Cdkn1c")
+
+boxploter("Cdkn2d")
+boxploter("Myc")
+boxploter("Myb")
+dev.off()
+###################################
 
 
 pdf("boxplot_major_HSC_genes.pdf")
@@ -115,22 +136,6 @@ boxploter("Mecom")
 boxploter("Adgrg1")
 dev.off()
 
-###################################
-
-pdf("boxplot_cell_cycle_genes.pdf")
-par(mfrow=c(3,3))
-boxploter("Ccna1")
-boxploter("Ccnb1")
-boxploter("Ccne1")
-
-boxploter("Cdkn1a")
-boxploter("Cdkn1b")
-boxploter("Cdkn1c")
-
-boxploter("Cdkn2d")
-boxploter("Myc")
-boxploter("Myb")
-dev.off()
 ###################################
 
 pdf("boxplot_major_MK_genes.pdf")
