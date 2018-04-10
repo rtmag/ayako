@@ -247,17 +247,17 @@ write.table(CD41_plus_tr_4,"4_CD41+_tr_over_CD41-_tr.bed",sep="\t",quote=F,row.n
 write.table(CD41_minus_tr_4,"4_CD41-_tr_over_CD41+_tr.bed",sep="\t",quote=F,row.names=F,col.names=F)
 
 ###############################################################
-annotatePeaks.pl 1_CD41+_untr_over_CD41+_tr.bed mm10 > 1_CD41+_untr_over_CD41+_tr-mm10_annotation.txt
-annotatePeaks.pl 1_CD41+_tr_over_CD41+_untr.bed mm10 > 1_CD41+_tr_over_CD41+_untr-mm10_annotation.txt
+annotatePeaks.pl 1_CD41+_untr_over_CD41+_tr.bed mm10 -annStats 1_CD41+_untr_over_CD41+_tr-mm10_annotation.annStats > 1_CD41+_untr_over_CD41+_tr-mm10_annotation.txt
+annotatePeaks.pl 1_CD41+_tr_over_CD41+_untr.bed mm10 -annStats 1_CD41+_tr_over_CD41+_untr-mm10_annotation.annStats > 1_CD41+_tr_over_CD41+_untr-mm10_annotation.txt
 
-annotatePeaks.pl 2_CD41-_untr_over_CD41-_tr.bed mm10 > 2_CD41-_untr_over_CD41-_tr-mm10_annotation.txt
-annotatePeaks.pl 2_CD41-_tr_over_CD41-_untr.bed mm10 > 2_CD41-_tr_over_CD41-_untr-mm10_annotation.txt
+annotatePeaks.pl 2_CD41-_untr_over_CD41-_tr.bed mm10 -annStats 2_CD41-_untr_over_CD41-_tr-mm10_annotation.annStats > 2_CD41-_untr_over_CD41-_tr-mm10_annotation.txt
+annotatePeaks.pl 2_CD41-_tr_over_CD41-_untr.bed mm10 -annStats 2_CD41-_tr_over_CD41-_untr-mm10_annotation.annStats > 2_CD41-_tr_over_CD41-_untr-mm10_annotation.txt
 
-annotatePeaks.pl 3_CD41+_untr_over_CD41-_untr.bed mm10 > 3_CD41+_untr_over_CD41-_untr-mm10_annotation.txt
-annotatePeaks.pl 3_CD41-_untr_over_CD41+_untr.bed mm10 > 3_CD41-_untr_over_CD41+_untr-mm10_annotation.txt
+annotatePeaks.pl 3_CD41+_untr_over_CD41-_untr.bed mm10 -annStats 3_CD41+_untr_over_CD41-_untr-mm10_annotation.annStats > 3_CD41+_untr_over_CD41-_untr-mm10_annotation.txt
+annotatePeaks.pl 3_CD41-_untr_over_CD41+_untr.bed mm10 -annStats 3_CD41-_untr_over_CD41+_untr-mm10_annotation.annStats > 3_CD41-_untr_over_CD41+_untr-mm10_annotation.txt
 
-annotatePeaks.pl 4_CD41+_tr_over_CD41-_tr.bed mm10 > 4_CD41+_tr_over_CD41-_tr-mm10_annotation.txt
-annotatePeaks.pl 4_CD41-_tr_over_CD41+_tr.bed mm10 > 4_CD41-_tr_over_CD41+_tr-mm10_annotation.txt
+annotatePeaks.pl 4_CD41+_tr_over_CD41-_tr.bed mm10 -annStats 4_CD41+_tr_over_CD41-_tr-mm10_annotation.annStats > 4_CD41+_tr_over_CD41-_tr-mm10_annotation.txt
+annotatePeaks.pl 4_CD41-_tr_over_CD41+_tr.bed mm10 -annStats 4_CD41-_tr_over_CD41+_tr-mm10_annotation.annStats > 4_CD41-_tr_over_CD41+_tr-mm10_annotation.txt
 
 more 1_CD41+_untr_over_CD41+_tr-mm10_annotation.txt|cut -f2,3,4,16 > 1_CD41+_untr_over_CD41+_tr-mm10_closest_gene.bed
 more 1_CD41+_tr_over_CD41+_untr-mm10_annotation.txt|cut -f2,3,4,16 > 1_CD41+_tr_over_CD41+_untr-mm10_closest_gene.bed
@@ -271,7 +271,7 @@ more 3_CD41-_untr_over_CD41+_untr-mm10_annotation.txt|cut -f2,3,4,16 > 3_CD41-_u
 more 4_CD41+_tr_over_CD41-_tr-mm10_annotation.txt|cut -f2,3,4,16 > 4_CD41+_tr_over_CD41-_tr-mm10_closest_gene.bed
 more 4_CD41-_tr_over_CD41+_tr-mm10_annotation.txt|cut -f2,3,4,16 > 4_CD41-_tr_over_CD41+_tr-mm10_closest_gene.bed
 
-
+annotatePeaks.pl Down_NT.bed hg19 -annStats Down_NT.annStats > Down_NT.anno
 ###############################################################
 
 library(graphics)
