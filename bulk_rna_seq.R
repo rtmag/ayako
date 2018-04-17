@@ -272,3 +272,35 @@ boxploter("Nfatc1")
 boxploter("Pik3r1")
 #
 dev.off()
+
+#################################################################################################
+
+countData=readRDS("ayako_bulk_rna_counts.rds")
+library(Rsubread)
+options(scipen=999)
+library(DESeq2)
+library(gplots)
+library(factoextra)
+library(RColorBrewer)
+
+countData = countData[,1:12]
+
+design<-data.frame(group=c("Ctrl_CD41minus","Ctrl_CD41minus","Ctrl_CD41minus",
+                           "Ctrl_CD41plus","Ctrl_CD41plus","Ctrl_CD41plus",
+                           "Thpo_CD41minus","Thpo_CD41minus","Thpo_CD41minus",
+                           "Thpo_CD41plus","Thpo_CD41plus","Thpo_CD41plus"
+                           ) )
+
+
+dLRT <- DESeqDataSetFromMatrix(countData = countData, colData = design, design = ~ group )
+dLRT <- DESeq(dLRT, test="LRT", reduced=~1)
+dLRT_vsd <- varianceStabilizingTransformation(dLRT)
+vsd = assay(dLRT_vsd)
+dLRT_res = results(dLRT)
+
+pdf("test.pdf")
+sig_vsd = vsd[which(dLRT_res$padj<0.05),]
+colors <- colorRampPalette(c("blue","white","red"))(45)
+heatmap.2(sig_vsd,col=colors,scale="row", trace="none",distfun = function(x) get_dist(x,method="spearman"),srtCol=25,
+labRow = FALSE,xlab="", ylab="Genes",key.title="Gene expression")
+dev.off()
