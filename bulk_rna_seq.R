@@ -331,6 +331,7 @@ dev.off()
 options(bitmapType="cairo")
 library(wordcloud)
 countData=readRDS("ayako_bulk_rna_counts.rds")
+vsd = readRDS("vsd_bulk_ayako.rds")
 
 # 1) CD41+ UNTR VS CD41- UNTR
 # DESEQ2
@@ -342,40 +343,31 @@ dds_res = results(dds,contrast=c("group","Ctrl_CD41plus","Ctrl_CD41minus"))
 
 # Volcano
 
-pdf("volcano.pdf")
+pdf("1_CD41+_untr_VS_CD41-_untr/volcano.pdf")
 plot(dds_res$log2FoldChange,-log10(dds_res$padj),xlab=expression('Log'[2]*' Fold Change ( CD41+ Ctrl / CD41- Ctrl )'),
               ylab=expression('-Log'[10]*' Q-values'),col=alpha("grey",.5),pch=20)
-abline(v=-.5,lty = 2,col="grey")
-abline(v=.5,lty = 2,col="grey")
+abline(v=-1,lty = 2,col="grey")
+abline(v=1,lty = 2,col="grey")
 abline(h=-log10(0.05),lty = 2,col="grey")
-points(dds_res$log2FoldChange[abs(dds_res$log2FoldChange)>.5 & dds_res$padj<0.05],
-       -log10(dds_res$padj)[abs(dds_res$log2FoldChange)>.5 & dds_res$padj<0.05],
-      col="blue",pch=20)
-legend("topright", paste("CD41+ Ctrl:",length(which(dds_res$log2FoldChange>.5 & dds_res$padj<0.05))), bty="n") 
-legend("topleft", paste("CD41- Ctrl:",length(which(dds_res$log2FoldChange<(-.5) & dds_res$padj<0.05))), bty="n") 
+points(dds_res$log2FoldChange[abs(dds_res$log2FoldChange)>1 & dds_res$padj<0.05],
+       -log10(dds_res$padj)[abs(dds_res$log2FoldChange)>1 & dds_res$padj<0.05],
+      col="red",pch=20)
+legend("topright", paste("CD41+ Ctrl:",length(which(dds_res$log2FoldChange>1 & dds_res$padj<0.05))), bty="n") 
+legend("topleft", paste("CD41- Ctrl:",length(which(dds_res$log2FoldChange<(-1) & dds_res$padj<0.05))), bty="n") 
 
-x=dds_res[which(dds_res$padj<0.05),]
-x1=head(x[order(x$log2FoldChange),],15)
-x2=tail(x[order(x$log2FoldChange),],15)
-points(x1$log2FoldChange,-log10(x1$padj),pch=20,col="red")
-nc=wordlayout(x1$log2FoldChange,-log10(x1$padj),rownames(x1),cex=1)
-text(nc[,1],nc[,2],label=rownames(x1),cex=.7)
-points(x2$log2FoldChange,-log10(x2$padj),pch=20,col="red")
-nc=wordlayout(x2$log2FoldChange,-log10(x2$padj),rownames(x2),cex=1)
-text(nc[,1],nc[,2],label=rownames(x2),cex=.7)
 dev.off()
 
-pdf("volcano_labels.pdf")
+pdf("1_CD41+_untr_VS_CD41-_untr/volcano_labels.pdf")
 plot(dds_res$log2FoldChange,-log10(dds_res$padj),xlab=expression('Log'[2]*' Fold Change ( CD41+ Ctrl / CD41- Ctrl )'),
               ylab=expression('-Log'[10]*' Q-values'),col=alpha("grey",.5),pch=20)
-abline(v=-.5,lty = 2,col="grey")
-abline(v=.5,lty = 2,col="grey")
+abline(v=-1,lty = 2,col="grey")
+abline(v=1,lty = 2,col="grey")
 abline(h=-log10(0.05),lty = 2,col="grey")
-points(dds_res$log2FoldChange[abs(dds_res$log2FoldChange)>.5 & dds_res$padj<0.05],
-       -log10(dds_res$padj)[abs(dds_res$log2FoldChange)>.5 & dds_res$padj<0.05],
+points(dds_res$log2FoldChange[abs(dds_res$log2FoldChange)>1 & dds_res$padj<0.05],
+       -log10(dds_res$padj)[abs(dds_res$log2FoldChange)>1 & dds_res$padj<0.05],
       col="blue",pch=20)
-legend("topright", paste("CD41+ Ctrl:",length(which(dds_res$log2FoldChange>.5 & dds_res$padj<0.05))), bty="n") 
-legend("topleft", paste("CD41- Ctrl:",length(which(dds_res$log2FoldChange<(-.5) & dds_res$padj<0.05))), bty="n") 
+legend("topright", paste("CD41+ Ctrl:",length(which(dds_res$log2FoldChange>1 & dds_res$padj<0.05))), bty="n") 
+legend("topleft", paste("CD41- Ctrl:",length(which(dds_res$log2FoldChange<(-1) & dds_res$padj<0.05))), bty="n") 
 
 x=dds_res[which(dds_res$padj<0.05),]
 x1=head(x[order(x$log2FoldChange),],15)
@@ -389,80 +381,481 @@ text(nc[,1],nc[,2],label=rownames(x2),cex=.7)
 dev.off()
 
 # Heatmap
+postscript("1_CD41+_untr_VS_CD41-_untr/anova.ps",height=10,width=10,horizontal=F)
+sig_vsd = vsd[which(abs(dds_res$log2FoldChange)>1 & dds_res$padj<0.05),1:6]
+colnames(sig_vsd) <- c("CD41-_Ctrl","CD41-_Ctrl","CD41-_Ctrl",
+                      "CD41+_Ctrl","CD41+_Ctrl","CD41+_Ctrl")
 
+colors <- rev(colorRampPalette( (brewer.pal(9, "RdBu")) )(20))
+heatmap.2(sig_vsd,col=colors,scale="row", trace="none",distfun = function(x) get_dist(x,method="pearson"),srtCol=90,
+labRow = FALSE,xlab="", ylab="Genes",key.title="Gene expression",cexCol=.8)
+dev.off()
 # MAplot
-
+pdf("1_CD41+_untr_VS_CD41-_untr/maplot.pdf")
+plotMA(dds_res)
+dev.off()
 # RankedListFor GSEA
+up_reg = dds_res[ which(dds_res$log2FoldChange>0),]
+up_reg = up_reg[ !is.na(up_reg$padj),]
+up_reg_log=-log(up_reg$padj)
+names(up_reg_log) = rownames(up_reg)
 
+dw_reg = dds_res[ which(dds_res$log2FoldChange<0),]
+dw_reg = dw_reg[ !is.na(dw_reg$padj),]
+dw_reg_log=log(dw_reg$padj)
+names(dw_reg_log) = rownames(dw_reg)
+
+rankedlist = cbind(sort(c(up_reg_log,dw_reg_log),decreasing=T) )
+rankedlist = data.frame(ensid=rownames(rankedlist), log10FDR=rankedlist)
+write.table(rankedlist,"1_CD41+_untr_VS_CD41-_untr/genes_ranked_table_FCFDR.rnk", sep="\t", quote=F,col.names=F,row.names=F)
 # Significant Results ordered by log2FC
+csv_table = dds_res[which(dds_res$padj<0.05 & abs(dds_res$log2FoldChange)>1),]
+csv_table = csv_table[order(csv_table$log2FoldChange),]
+write.csv(csv_table,"1_CD41+_untr_VS_CD41-_untr/differentially_expressed_genes.csv")
 
 #######################################################################################################################
-# 2) CD41+ UNTR VS CD41- TRTD
+# 2) CD41+ TRTD VS CD41- TRTD
 # DESEQ2
+
+design<-data.frame(group=c("Thpo_CD41minus","Thpo_CD41minus","Thpo_CD41minus",
+                           "Thpo_CD41plus","Thpo_CD41plus","Thpo_CD41plus"
+                           ) )
+                   
+dds <- DESeqDataSetFromMatrix(countData = countData[,7:12], colData = design, design = ~ group )
+dds <- DESeq(dds)
+dds_res = results(dds,contrast=c("group","Thpo_CD41plus","Thpo_CD41minus"))
 
 # Volcano
 
+pdf("2_CD41+_tr_VS_CD41-_tr/volcano.pdf")
+plot(dds_res$log2FoldChange,-log10(dds_res$padj),xlab=expression('Log'[2]*' Fold Change ( CD41+ Treated / CD41- Treated )'),
+              ylab=expression('-Log'[10]*' Q-values'),col=alpha("grey",.5),pch=20)
+abline(v=-1,lty = 2,col="grey")
+abline(v=1,lty = 2,col="grey")
+abline(h=-log10(0.05),lty = 2,col="grey")
+points(dds_res$log2FoldChange[abs(dds_res$log2FoldChange)>1 & dds_res$padj<0.05],
+       -log10(dds_res$padj)[abs(dds_res$log2FoldChange)>1 & dds_res$padj<0.05],
+      col="red",pch=20)
+legend("topright", paste("CD41+ Treated:",length(which(dds_res$log2FoldChange>1 & dds_res$padj<0.05))), bty="n") 
+legend("topleft", paste("CD41- Treated:",length(which(dds_res$log2FoldChange<(-1) & dds_res$padj<0.05))), bty="n") 
+
+dev.off()
+
+pdf("2_CD41+_tr_VS_CD41-_tr/volcano_labels.pdf")
+plot(dds_res$log2FoldChange,-log10(dds_res$padj),xlab=expression('Log'[2]*' Fold Change ( CD41+ Treated / CD41- Treated )'),
+              ylab=expression('-Log'[10]*' Q-values'),col=alpha("grey",.5),pch=20)
+abline(v=-1,lty = 2,col="grey")
+abline(v=1,lty = 2,col="grey")
+abline(h=-log10(0.05),lty = 2,col="grey")
+points(dds_res$log2FoldChange[abs(dds_res$log2FoldChange)>1 & dds_res$padj<0.05],
+       -log10(dds_res$padj)[abs(dds_res$log2FoldChange)>1 & dds_res$padj<0.05],
+      col="blue",pch=20)
+legend("topright", paste("CD41+ Treated:",length(which(dds_res$log2FoldChange>1 & dds_res$padj<0.05))), bty="n") 
+legend("topleft", paste("CD41- Treated:",length(which(dds_res$log2FoldChange<(-1) & dds_res$padj<0.05))), bty="n") 
+
+x=dds_res[which(dds_res$padj<0.05),]
+x1=head(x[order(x$log2FoldChange),],15)
+x2=tail(x[order(x$log2FoldChange),],15)
+points(x1$log2FoldChange,-log10(x1$padj),pch=20,col="red")
+nc=wordlayout(x1$log2FoldChange,-log10(x1$padj),rownames(x1),cex=1)
+text(nc[,1],nc[,2],label=rownames(x1),cex=.7)
+points(x2$log2FoldChange,-log10(x2$padj),pch=20,col="red")
+nc=wordlayout(x2$log2FoldChange,-log10(x2$padj),rownames(x2),cex=1)
+text(nc[,1],nc[,2],label=rownames(x2),cex=.7)
+dev.off()
+
 # Heatmap
+postscript("2_CD41+_tr_VS_CD41-_tr/anova.ps",height=10,width=10,horizontal=F)
+sig_vsd = vsd[which(abs(dds_res$log2FoldChange)>1 & dds_res$padj<0.05),7:12]
+colnames(sig_vsd) <- c("CD41-_Thpo","CD41-_Thpo","CD41-_Thpo",
+"CD41+_Thpo","CD41+_Thpo","CD41+_Thpo")
 
+colors <- rev(colorRampPalette( (brewer.pal(9, "RdBu")) )(20))
+heatmap.2(sig_vsd,col=colors,scale="row", trace="none",distfun = function(x) get_dist(x,method="pearson"),srtCol=90,
+labRow = FALSE,xlab="", ylab="Genes",key.title="Gene expression",cexCol=.8)
+dev.off()
 # MAplot
-
+pdf("2_CD41+_tr_VS_CD41-_tr/maplot.pdf")
+plotMA(dds_res)
+dev.off()
 # RankedListFor GSEA
+up_reg = dds_res[ which(dds_res$log2FoldChange>0),]
+up_reg = up_reg[ !is.na(up_reg$padj),]
+up_reg_log=-log(up_reg$padj)
+names(up_reg_log) = rownames(up_reg)
 
+dw_reg = dds_res[ which(dds_res$log2FoldChange<0),]
+dw_reg = dw_reg[ !is.na(dw_reg$padj),]
+dw_reg_log=log(dw_reg$padj)
+names(dw_reg_log) = rownames(dw_reg)
+
+rankedlist = cbind(sort(c(up_reg_log,dw_reg_log),decreasing=T) )
+rankedlist = data.frame(ensid=rownames(rankedlist), log10FDR=rankedlist)
+write.table(rankedlist,"2_CD41+_tr_VS_CD41-_tr/genes_ranked_table_FCFDR.rnk", sep="\t", quote=F,col.names=F,row.names=F)
 # Significant Results ordered by log2FC
+csv_table = dds_res[which(dds_res$padj<0.05 & abs(dds_res$log2FoldChange)>1),]
+csv_table = csv_table[order(csv_table$log2FoldChange),]
+write.csv(csv_table,"2_CD41+_tr_VS_CD41-_tr/differentially_expressed_genes.csv")
+
 
 #######################################################################################################################
 # 3) CD41+ UNTR VS CD41+ TRTD
 # DESEQ2
+design<-data.frame(group=c("Ctrl_CD41plus","Ctrl_CD41plus","Ctrl_CD41plus",
+                           "Thpo_CD41plus","Thpo_CD41plus","Thpo_CD41plus"
+                           ) )
 
+dds <- DESeqDataSetFromMatrix(countData = countData[,c(4:6,10:12)], colData = design, design = ~ group )
+dds <- DESeq(dds)
+dds_res = results(dds,contrast=c("group","Ctrl_CD41plus","Thpo_CD41plus"))
 # Volcano
 
+pdf("3_CD41+_untr_VS_CD41+_tr/volcano.pdf")
+plot(dds_res$log2FoldChange,-log10(dds_res$padj),xlab=expression('Log'[2]*' Fold Change ( CD41+ Untreated / CD41+ Treated )'),
+              ylab=expression('-Log'[10]*' Q-values'),col=alpha("grey",.5),pch=20)
+abline(v=-1,lty = 2,col="grey")
+abline(v=1,lty = 2,col="grey")
+abline(h=-log10(0.05),lty = 2,col="grey")
+points(dds_res$log2FoldChange[abs(dds_res$log2FoldChange)>1 & dds_res$padj<0.05],
+       -log10(dds_res$padj)[abs(dds_res$log2FoldChange)>1 & dds_res$padj<0.05],
+      col="red",pch=20)
+legend("topright", paste("CD41+ Untreated:",length(which(dds_res$log2FoldChange>1 & dds_res$padj<0.05))), bty="n") 
+legend("topleft", paste("CD41+ Treated:",length(which(dds_res$log2FoldChange<(-1) & dds_res$padj<0.05))), bty="n") 
+
+dev.off()
+
+pdf("3_CD41+_untr_VS_CD41+_tr/volcano_labels.pdf")
+plot(dds_res$log2FoldChange,-log10(dds_res$padj),xlab=expression('Log'[2]*' Fold Change ( CD41+ Untreated / CD41+ Treated )'),
+              ylab=expression('-Log'[10]*' Q-values'),col=alpha("grey",.5),pch=20)
+abline(v=-1,lty = 2,col="grey")
+abline(v=1,lty = 2,col="grey")
+abline(h=-log10(0.05),lty = 2,col="grey")
+points(dds_res$log2FoldChange[abs(dds_res$log2FoldChange)>1 & dds_res$padj<0.05],
+       -log10(dds_res$padj)[abs(dds_res$log2FoldChange)>1 & dds_res$padj<0.05],
+      col="blue",pch=20)
+legend("topright", paste("CD41+ Untreated:",length(which(dds_res$log2FoldChange>1 & dds_res$padj<0.05))), bty="n") 
+legend("topleft", paste("CD41+ Treated:",length(which(dds_res$log2FoldChange<(-1) & dds_res$padj<0.05))), bty="n") 
+
+x=dds_res[which(dds_res$padj<0.05),]
+x1=head(x[order(x$log2FoldChange),],15)
+x2=tail(x[order(x$log2FoldChange),],15)
+points(x1$log2FoldChange,-log10(x1$padj),pch=20,col="red")
+nc=wordlayout(x1$log2FoldChange,-log10(x1$padj),rownames(x1),cex=1)
+text(nc[,1],nc[,2],label=rownames(x1),cex=.7)
+points(x2$log2FoldChange,-log10(x2$padj),pch=20,col="red")
+nc=wordlayout(x2$log2FoldChange,-log10(x2$padj),rownames(x2),cex=1)
+text(nc[,1],nc[,2],label=rownames(x2),cex=.7)
+dev.off()
+
 # Heatmap
+postscript("3_CD41+_untr_VS_CD41+_tr/anova.ps",height=10,width=10,horizontal=F)
+sig_vsd = vsd[which(abs(dds_res$log2FoldChange)>1 & dds_res$padj<0.05),c(4:6,10:12)]
+colnames(sig_vsd) <- c("CD41+_Ctrl","CD41+_Ctrl","CD41+_Ctrl",
+"CD41+_Thpo","CD41+_Thpo","CD41+_Thpo")
 
+colors <- rev(colorRampPalette( (brewer.pal(9, "RdBu")) )(20))
+heatmap.2(sig_vsd,col=colors,scale="row", trace="none",distfun = function(x) get_dist(x,method="pearson"),srtCol=90,
+labRow = FALSE,xlab="", ylab="Genes",key.title="Gene expression",cexCol=.8)
+dev.off()
 # MAplot
-
+pdf("3_CD41+_untr_VS_CD41+_tr/maplot.pdf")
+plotMA(dds_res)
+dev.off()
 # RankedListFor GSEA
+up_reg = dds_res[ which(dds_res$log2FoldChange>0),]
+up_reg = up_reg[ !is.na(up_reg$padj),]
+up_reg_log=-log(up_reg$padj)
+names(up_reg_log) = rownames(up_reg)
 
+dw_reg = dds_res[ which(dds_res$log2FoldChange<0),]
+dw_reg = dw_reg[ !is.na(dw_reg$padj),]
+dw_reg_log=log(dw_reg$padj)
+names(dw_reg_log) = rownames(dw_reg)
+
+rankedlist = cbind(sort(c(up_reg_log,dw_reg_log),decreasing=T) )
+rankedlist = data.frame(ensid=rownames(rankedlist), log10FDR=rankedlist)
+write.table(rankedlist,"3_CD41+_untr_VS_CD41+_tr/genes_ranked_table_FCFDR.rnk", sep="\t", quote=F,col.names=F,row.names=F)
 # Significant Results ordered by log2FC
+csv_table = dds_res[which(dds_res$padj<0.05 & abs(dds_res$log2FoldChange)>1),]
+csv_table = csv_table[order(csv_table$log2FoldChange),]
+write.csv(csv_table,"3_CD41+_untr_VS_CD41+_tr/differentially_expressed_genes.csv")
 
 #######################################################################################################################
 # 4) CD41- UNTR VS CD41- TRTD
 # DESEQ2
+design<-data.frame(group=c("Ctrl_CD41minus","Ctrl_CD41minus","Ctrl_CD41minus",
+                           "Thpo_CD41minus","Thpo_CD41minus","Thpo_CD41minus"
+                           ) )
 
+dds <- DESeqDataSetFromMatrix(countData = countData[,c(1:3,7:9)], colData = design, design = ~ group )
+dds <- DESeq(dds)
+dds_res = results(dds,contrast=c("group","Ctrl_CD41minus","Thpo_CD41minus"))
 # Volcano
 
+pdf("4_CD41-_untr_VS_CD41-_tr/volcano.pdf")
+plot(dds_res$log2FoldChange,-log10(dds_res$padj),xlab=expression('Log'[2]*' Fold Change ( CD41- Untreated / CD41- Treated )'),
+              ylab=expression('-Log'[10]*' Q-values'),col=alpha("grey",.5),pch=20)
+abline(v=-1,lty = 2,col="grey")
+abline(v=1,lty = 2,col="grey")
+abline(h=-log10(0.05),lty = 2,col="grey")
+points(dds_res$log2FoldChange[abs(dds_res$log2FoldChange)>1 & dds_res$padj<0.05],
+       -log10(dds_res$padj)[abs(dds_res$log2FoldChange)>1 & dds_res$padj<0.05],
+      col="red",pch=20)
+legend("topright", paste("CD41- Untreated:",length(which(dds_res$log2FoldChange>1 & dds_res$padj<0.05))), bty="n") 
+legend("topleft", paste("CD41- Treated:",length(which(dds_res$log2FoldChange<(-1) & dds_res$padj<0.05))), bty="n") 
+
+dev.off()
+
+pdf("4_CD41-_untr_VS_CD41-_tr/volcano_labels.pdf")
+plot(dds_res$log2FoldChange,-log10(dds_res$padj),xlab=expression('Log'[2]*' Fold Change ( CD41- Untreated / CD41- Treated )'),
+              ylab=expression('-Log'[10]*' Q-values'),col=alpha("grey",.5),pch=20)
+abline(v=-1,lty = 2,col="grey")
+abline(v=1,lty = 2,col="grey")
+abline(h=-log10(0.05),lty = 2,col="grey")
+points(dds_res$log2FoldChange[abs(dds_res$log2FoldChange)>1 & dds_res$padj<0.05],
+       -log10(dds_res$padj)[abs(dds_res$log2FoldChange)>1 & dds_res$padj<0.05],
+      col="blue",pch=20)
+legend("topright", paste("CD41- Untreated:",length(which(dds_res$log2FoldChange>1 & dds_res$padj<0.05))), bty="n") 
+legend("topleft", paste("CD41- Treated:",length(which(dds_res$log2FoldChange<(-1) & dds_res$padj<0.05))), bty="n") 
+
+x=dds_res[which(dds_res$padj<0.05),]
+x1=head(x[order(x$log2FoldChange),],15)
+x2=tail(x[order(x$log2FoldChange),],15)
+points(x1$log2FoldChange,-log10(x1$padj),pch=20,col="red")
+nc=wordlayout(x1$log2FoldChange,-log10(x1$padj),rownames(x1),cex=1)
+text(nc[,1],nc[,2],label=rownames(x1),cex=.7)
+points(x2$log2FoldChange,-log10(x2$padj),pch=20,col="red")
+nc=wordlayout(x2$log2FoldChange,-log10(x2$padj),rownames(x2),cex=1)
+text(nc[,1],nc[,2],label=rownames(x2),cex=.7)
+dev.off()
+
 # Heatmap
+postscript("4_CD41-_untr_VS_CD41-_tr/anova.ps",height=10,width=10,horizontal=F)
+sig_vsd = vsd[which(abs(dds_res$log2FoldChange)>1 & dds_res$padj<0.05),c(1:3,7:9)]
+colnames(sig_vsd) <- c("CD41-_Ctrl","CD41-_Ctrl","CD41-_Ctrl",
+"CD41-_Thpo","CD41-_Thpo","CD41-_Thpo")
 
+colors <- rev(colorRampPalette( (brewer.pal(9, "RdBu")) )(20))
+heatmap.2(sig_vsd,col=colors,scale="row", trace="none",distfun = function(x) get_dist(x,method="pearson"),srtCol=90,
+labRow = FALSE,xlab="", ylab="Genes",key.title="Gene expression",cexCol=.8)
+dev.off()
 # MAplot
-
+pdf("4_CD41-_untr_VS_CD41-_tr/maplot.pdf")
+plotMA(dds_res)
+dev.off()
 # RankedListFor GSEA
+up_reg = dds_res[ which(dds_res$log2FoldChange>0),]
+up_reg = up_reg[ !is.na(up_reg$padj),]
+up_reg_log=-log(up_reg$padj)
+names(up_reg_log) = rownames(up_reg)
 
+dw_reg = dds_res[ which(dds_res$log2FoldChange<0),]
+dw_reg = dw_reg[ !is.na(dw_reg$padj),]
+dw_reg_log=log(dw_reg$padj)
+names(dw_reg_log) = rownames(dw_reg)
+
+rankedlist = cbind(sort(c(up_reg_log,dw_reg_log),decreasing=T) )
+rankedlist = data.frame(ensid=rownames(rankedlist), log10FDR=rankedlist)
+write.table(rankedlist,"4_CD41-_untr_VS_CD41-_tr/genes_ranked_table_FCFDR.rnk", sep="\t", quote=F,col.names=F,row.names=F)
 # Significant Results ordered by log2FC
+csv_table = dds_res[which(dds_res$padj<0.05 & abs(dds_res$log2FoldChange)>1),]
+csv_table = csv_table[order(csv_table$log2FoldChange),]
+write.csv(csv_table,"4_CD41-_untr_VS_CD41-_tr/differentially_expressed_genes.csv")
+
 
 #######################################################################################################################
 # 5) CD41+ VS CD41- Controlled by Treatment
 # DESEQ2
+design<-data.frame(CD41=c("CD41minus","CD41minus","CD41minus",
+                           "CD41plus","CD41plus","CD41plus",
+                           "CD41minus","CD41minus","CD41minus",
+                           "CD41plus","CD41plus","CD41plus"),
+                   Treatment=c("Ctrl","Ctrl","Ctrl",
+                           "Ctrl","Ctrl","Ctrl",
+                           "Thpo","Thpo","Thpo",
+                           "Thpo","Thpo","Thpo") )
+
+dds <- DESeqDataSetFromMatrix(countData = countData[,1:12], colData = design, 
+                  design = ~ Treatment + CD41 )
+
+dds <- DESeq(dds, test="LRT", 
+           full= ~ Treatment + CD41, 
+           reduced= ~ Treatment )
+dds_res <- results(dds,contrast=c("CD41","CD41plus","CD41minus"))
 
 # Volcano
 
+pdf("5_CD41+_VS_CD41-_ControlledByTreatment/volcano.pdf")
+plot(dds_res$log2FoldChange,-log10(dds_res$padj),xlab=expression('Log'[2]*' Fold Change ( CD41+ / CD41- )'),
+              ylab=expression('-Log'[10]*' Q-values'),col=alpha("grey",.5),pch=20)
+abline(v=-1,lty = 2,col="grey")
+abline(v=1,lty = 2,col="grey")
+abline(h=-log10(0.05),lty = 2,col="grey")
+points(dds_res$log2FoldChange[abs(dds_res$log2FoldChange)>1 & dds_res$padj<0.05],
+       -log10(dds_res$padj)[abs(dds_res$log2FoldChange)>1 & dds_res$padj<0.05],
+      col="red",pch=20)
+legend("topright", paste("CD41+:",length(which(dds_res$log2FoldChange>1 & dds_res$padj<0.05))), bty="n")
+legend("topleft", paste("CD41-:",length(which(dds_res$log2FoldChange<(-1) & dds_res$padj<0.05))), bty="n")
+
+dev.off()
+
+pdf("5_CD41+_VS_CD41-_ControlledByTreatment/volcano_labels.pdf")
+plot(dds_res$log2FoldChange,-log10(dds_res$padj),xlab=expression('Log'[2]*' Fold Change ( CD41+ / CD41- )'),
+              ylab=expression('-Log'[10]*' Q-values'),col=alpha("grey",.5),pch=20)
+abline(v=-1,lty = 2,col="grey")
+abline(v=1,lty = 2,col="grey")
+abline(h=-log10(0.05),lty = 2,col="grey")
+points(dds_res$log2FoldChange[abs(dds_res$log2FoldChange)>1 & dds_res$padj<0.05],
+       -log10(dds_res$padj)[abs(dds_res$log2FoldChange)>1 & dds_res$padj<0.05],
+      col="blue",pch=20)
+legend("topright", paste("CD41+:",length(which(dds_res$log2FoldChange>1 & dds_res$padj<0.05))), bty="n") 
+legend("topleft", paste("CD41-:",length(which(dds_res$log2FoldChange<(-1) & dds_res$padj<0.05))), bty="n") 
+
+x=dds_res[which(dds_res$padj<0.05),]
+x1=head(x[order(x$log2FoldChange),],15)
+x2=tail(x[order(x$log2FoldChange),],15)
+points(x1$log2FoldChange,-log10(x1$padj),pch=20,col="red")
+nc=wordlayout(x1$log2FoldChange,-log10(x1$padj),rownames(x1),cex=1)
+text(nc[,1],nc[,2],label=rownames(x1),cex=.7)
+points(x2$log2FoldChange,-log10(x2$padj),pch=20,col="red")
+nc=wordlayout(x2$log2FoldChange,-log10(x2$padj),rownames(x2),cex=1)
+text(nc[,1],nc[,2],label=rownames(x2),cex=.7)
+dev.off()
+
 # Heatmap
+postscript("5_CD41+_VS_CD41-_ControlledByTreatment/anova.ps",height=10,width=10,horizontal=F)
+sig_vsd = vsd[which(abs(dds_res$log2FoldChange)>1 & dds_res$padj<0.05),]
+colnames(sig_vsd) <- c("CD41-_Ctrl","CD41-_Ctrl","CD41-_Ctrl",
+"CD41+_Ctrl","CD41+_Ctrl","CD41+_Ctrl",
+"CD41-_Thpo","CD41-_Thpo","CD41-_Thpo",
+"CD41+_Thpo","CD41+_Thpo","CD41+_Thpo")
 
+colors <- rev(colorRampPalette( (brewer.pal(9, "RdBu")) )(20))
+heatmap.2(sig_vsd,col=colors,scale="row", trace="none",distfun = function(x) get_dist(x,method="pearson"),srtCol=90,
+labRow = FALSE,xlab="", ylab="Genes",key.title="Gene expression",cexCol=.8)
+dev.off()
 # MAplot
-
+pdf("5_CD41+_VS_CD41-_ControlledByTreatment/maplot.pdf")
+plotMA(dds_res)
+dev.off()
 # RankedListFor GSEA
+up_reg = dds_res[ which(dds_res$log2FoldChange>0),]
+up_reg = up_reg[ !is.na(up_reg$padj),]
+up_reg_log=-log(up_reg$padj)
+names(up_reg_log) = rownames(up_reg)
 
+dw_reg = dds_res[ which(dds_res$log2FoldChange<0),]
+dw_reg = dw_reg[ !is.na(dw_reg$padj),]
+dw_reg_log=log(dw_reg$padj)
+names(dw_reg_log) = rownames(dw_reg)
+
+rankedlist = cbind(sort(c(up_reg_log,dw_reg_log),decreasing=T) )
+rankedlist = data.frame(ensid=rownames(rankedlist), log10FDR=rankedlist)
+write.table(rankedlist,"5_CD41+_VS_CD41-_ControlledByTreatment/genes_ranked_table_FCFDR.rnk", sep="\t", quote=F,col.names=F,row.names=F)
 # Significant Results ordered by log2FC
+csv_table = dds_res[which(dds_res$padj<0.05 & abs(dds_res$log2FoldChange)>1),]
+csv_table = csv_table[order(csv_table$log2FoldChange),]
+write.csv(csv_table,"5_CD41+_VS_CD41-_ControlledByTreatment/differentially_expressed_genes.csv")
+
 
 #######################################################################################################################
 # 6) UNTR VS TRTD Controlled by CD41 status
 # DESEQ2
 
+design<-data.frame(CD41=c("CD41minus","CD41minus","CD41minus",
+                           "CD41plus","CD41plus","CD41plus",
+                           "CD41minus","CD41minus","CD41minus",
+                           "CD41plus","CD41plus","CD41plus"),
+                   Treatment=c("Ctrl","Ctrl","Ctrl",
+                           "Ctrl","Ctrl","Ctrl",
+                           "Thpo","Thpo","Thpo",
+                           "Thpo","Thpo","Thpo") )
+
+dds <- DESeqDataSetFromMatrix(countData = countData[,1:12], colData = design, 
+                  design = ~ CD41 + Treatment )
+
+dds <- DESeq(dds, test="LRT", 
+           full= ~ CD41 + Treatment, 
+           reduced= ~ CD41 )
+dds_res <- results(dds,contrast=c("Treatment","Ctrl","Thpo"))
+
 # Volcano
 
+pdf("6_untr_VS_tr_ControlledByCD41Status/volcano.pdf")
+plot(dds_res$log2FoldChange,-log10(dds_res$padj),xlab=expression('Log'[2]*' Fold Change ( Ctrl / Thpo )'),
+              ylab=expression('-Log'[10]*' Q-values'),col=alpha("grey",.5),pch=20)
+abline(v=-1,lty = 2,col="grey")
+abline(v=1,lty = 2,col="grey")
+abline(h=-log10(0.05),lty = 2,col="grey")
+points(dds_res$log2FoldChange[abs(dds_res$log2FoldChange)>1 & dds_res$padj<0.05],
+       -log10(dds_res$padj)[abs(dds_res$log2FoldChange)>1 & dds_res$padj<0.05],
+      col="red",pch=20)
+legend("topright", paste("Ctrl+:",length(which(dds_res$log2FoldChange>1 & dds_res$padj<0.05))), bty="n")
+legend("topleft", paste("Thpo:",length(which(dds_res$log2FoldChange<(-1) & dds_res$padj<0.05))), bty="n")
+
+dev.off()
+
+pdf("6_untr_VS_tr_ControlledByCD41Status/volcano_labels.pdf")
+plot(dds_res$log2FoldChange,-log10(dds_res$padj),xlab=expression('Log'[2]*' Fold Change ( Ctrl / Thpo )'),
+              ylab=expression('-Log'[10]*' Q-values'),col=alpha("grey",.5),pch=20)
+abline(v=-1,lty = 2,col="grey")
+abline(v=1,lty = 2,col="grey")
+abline(h=-log10(0.05),lty = 2,col="grey")
+points(dds_res$log2FoldChange[abs(dds_res$log2FoldChange)>1 & dds_res$padj<0.05],
+       -log10(dds_res$padj)[abs(dds_res$log2FoldChange)>1 & dds_res$padj<0.05],
+      col="blue",pch=20)
+legend("topright", paste("Ctrl:",length(which(dds_res$log2FoldChange>1 & dds_res$padj<0.05))), bty="n") 
+legend("topleft", paste("Thpo:",length(which(dds_res$log2FoldChange<(-1) & dds_res$padj<0.05))), bty="n") 
+
+x=dds_res[which(dds_res$padj<0.05),]
+x1=head(x[order(x$log2FoldChange),],15)
+x2=tail(x[order(x$log2FoldChange),],15)
+points(x1$log2FoldChange,-log10(x1$padj),pch=20,col="red")
+nc=wordlayout(x1$log2FoldChange,-log10(x1$padj),rownames(x1),cex=1)
+text(nc[,1],nc[,2],label=rownames(x1),cex=.7)
+points(x2$log2FoldChange,-log10(x2$padj),pch=20,col="red")
+nc=wordlayout(x2$log2FoldChange,-log10(x2$padj),rownames(x2),cex=1)
+text(nc[,1],nc[,2],label=rownames(x2),cex=.7)
+dev.off()
+
 # Heatmap
+postscript("6_untr_VS_tr_ControlledByCD41Status/anova.ps",height=10,width=10,horizontal=F)
+sig_vsd = vsd[which(abs(dds_res$log2FoldChange)>1 & dds_res$padj<0.05),]
+colnames(sig_vsd) <- c("CD41-_Ctrl","CD41-_Ctrl","CD41-_Ctrl",
+"CD41+_Ctrl","CD41+_Ctrl","CD41+_Ctrl",
+"CD41-_Thpo","CD41-_Thpo","CD41-_Thpo",
+"CD41+_Thpo","CD41+_Thpo","CD41+_Thpo")
 
+colors <- rev(colorRampPalette( (brewer.pal(9, "RdBu")) )(20))
+heatmap.2(sig_vsd,col=colors,scale="row", trace="none",distfun = function(x) get_dist(x,method="pearson"),srtCol=90,
+labRow = FALSE,xlab="", ylab="Genes",key.title="Gene expression",cexCol=.8)
+dev.off()
 # MAplot
-
+pdf("6_untr_VS_tr_ControlledByCD41Status/maplot.pdf")
+plotMA(dds_res)
+dev.off()
 # RankedListFor GSEA
+up_reg = dds_res[ which(dds_res$log2FoldChange>0),]
+up_reg = up_reg[ !is.na(up_reg$padj),]
+up_reg_log=-log(up_reg$padj)
+names(up_reg_log) = rownames(up_reg)
 
+dw_reg = dds_res[ which(dds_res$log2FoldChange<0),]
+dw_reg = dw_reg[ !is.na(dw_reg$padj),]
+dw_reg_log=log(dw_reg$padj)
+names(dw_reg_log) = rownames(dw_reg)
+
+rankedlist = cbind(sort(c(up_reg_log,dw_reg_log),decreasing=T) )
+rankedlist = data.frame(ensid=rownames(rankedlist), log10FDR=rankedlist)
+write.table(rankedlist,"6_untr_VS_tr_ControlledByCD41Status/genes_ranked_table_FCFDR.rnk", sep="\t", quote=F,col.names=F,row.names=F)
 # Significant Results ordered by log2FC
+csv_table = dds_res[which(dds_res$padj<0.05 & abs(dds_res$log2FoldChange)>1),]
+csv_table = csv_table[order(csv_table$log2FoldChange),]
+write.csv(csv_table,"6_untr_VS_tr_ControlledByCD41Status/differentially_expressed_genes.csv")
+
+
+
+
+
+
 
