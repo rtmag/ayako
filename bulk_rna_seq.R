@@ -305,7 +305,7 @@ vsd = readRDS("vsd_bulk_ayako.rds")
 dLRT_res = readRDS("dLRT_res_bulk_ayako.rds")
 
 
-postscript("test.ps",height=10,width=10,horizontal=F)
+postscript("anova.ps",height=10,width=10,horizontal=F)
 sig_vsd = vsd[which(dLRT_res$padj<0.05),]
 colnames(sig_vsd) <- c("CD41-_Ctrl","CD41-_Ctrl","CD41-_Ctrl",
                       "CD41+_Ctrl","CD41+_Ctrl","CD41+_Ctrl",
@@ -317,7 +317,7 @@ labRow = FALSE,xlab="", ylab="Genes",key.title="Gene expression",cexCol=.8)
 dev.off()
 
 
-postscript("test2.ps",height=10,width=10,horizontal=F)
+postscript("anova2.ps",height=10,width=10,horizontal=F)
 sig_vsd = vsd[which(dLRT_res$padj<0.05),]
 colnames(sig_vsd) <- c("CD41-_Ctrl","CD41-_Ctrl","CD41-_Ctrl",
                       "CD41+_Ctrl","CD41+_Ctrl","CD41+_Ctrl",
@@ -327,3 +327,142 @@ colors <- colorRampPalette(c("blue","white","red"))(45)
 heatmap.2(sig_vsd,col=colors,scale="row", trace="none",distfun = function(x) get_dist(x,method="pearson"),srtCol=90,
 labRow = FALSE,xlab="", ylab="Genes",key.title="Gene expression",cexCol=.8)
 dev.off()
+#######################################################################################################################
+options(bitmapType="cairo")
+library(wordcloud)
+countData=readRDS("ayako_bulk_rna_counts.rds")
+
+# 1) CD41+ UNTR VS CD41- UNTR
+# DESEQ2
+design<-data.frame(group=c("Ctrl_CD41minus","Ctrl_CD41minus","Ctrl_CD41minus",
+                           "Ctrl_CD41plus","Ctrl_CD41plus","Ctrl_CD41plus") )
+dds <- DESeqDataSetFromMatrix(countData = countData[,1:6], colData = design, design = ~ group )
+dds <- DESeq(dds)
+dds_res = results(dds,contrast=c("group","Ctrl_CD41plus","Ctrl_CD41minus"))
+
+# Volcano
+
+pdf("volcano.pdf")
+plot(dds_res$log2FoldChange,-log10(dds_res$padj),xlab=expression('Log'[2]*' Fold Change ( CD41+ Ctrl / CD41- Ctrl )'),
+              ylab=expression('-Log'[10]*' Q-values'),col=alpha("grey",.5),pch=20)
+abline(v=-.5,lty = 2,col="grey")
+abline(v=.5,lty = 2,col="grey")
+abline(h=-log10(0.05),lty = 2,col="grey")
+points(dds_res$log2FoldChange[abs(dds_res$log2FoldChange)>.5 & dds_res$padj<0.05],
+       -log10(dds_res$padj)[abs(dds_res$log2FoldChange)>.5 & dds_res$padj<0.05],
+      col="blue",pch=20)
+legend("topright", paste("CD41+ Ctrl:",length(which(dds_res$log2FoldChange>.5 & dds_res$padj<0.05))), bty="n") 
+legend("topleft", paste("CD41- Ctrl:",length(which(dds_res$log2FoldChange<(-.5) & dds_res$padj<0.05))), bty="n") 
+
+x=dds_res[which(dds_res$padj<0.05),]
+x1=head(x[order(x$log2FoldChange),],15)
+x2=tail(x[order(x$log2FoldChange),],15)
+points(x1$log2FoldChange,-log10(x1$padj),pch=20,col="red")
+nc=wordlayout(x1$log2FoldChange,-log10(x1$padj),rownames(x1),cex=1)
+text(nc[,1],nc[,2],label=rownames(x1),cex=.7)
+points(x2$log2FoldChange,-log10(x2$padj),pch=20,col="red")
+nc=wordlayout(x2$log2FoldChange,-log10(x2$padj),rownames(x2),cex=1)
+text(nc[,1],nc[,2],label=rownames(x2),cex=.7)
+dev.off()
+
+pdf("volcano_labels.pdf")
+plot(dds_res$log2FoldChange,-log10(dds_res$padj),xlab=expression('Log'[2]*' Fold Change ( CD41+ Ctrl / CD41- Ctrl )'),
+              ylab=expression('-Log'[10]*' Q-values'),col=alpha("grey",.5),pch=20)
+abline(v=-.5,lty = 2,col="grey")
+abline(v=.5,lty = 2,col="grey")
+abline(h=-log10(0.05),lty = 2,col="grey")
+points(dds_res$log2FoldChange[abs(dds_res$log2FoldChange)>.5 & dds_res$padj<0.05],
+       -log10(dds_res$padj)[abs(dds_res$log2FoldChange)>.5 & dds_res$padj<0.05],
+      col="blue",pch=20)
+legend("topright", paste("CD41+ Ctrl:",length(which(dds_res$log2FoldChange>.5 & dds_res$padj<0.05))), bty="n") 
+legend("topleft", paste("CD41- Ctrl:",length(which(dds_res$log2FoldChange<(-.5) & dds_res$padj<0.05))), bty="n") 
+
+x=dds_res[which(dds_res$padj<0.05),]
+x1=head(x[order(x$log2FoldChange),],15)
+x2=tail(x[order(x$log2FoldChange),],15)
+points(x1$log2FoldChange,-log10(x1$padj),pch=20,col="red")
+nc=wordlayout(x1$log2FoldChange,-log10(x1$padj),rownames(x1),cex=1)
+text(nc[,1],nc[,2],label=rownames(x1),cex=.7)
+points(x2$log2FoldChange,-log10(x2$padj),pch=20,col="red")
+nc=wordlayout(x2$log2FoldChange,-log10(x2$padj),rownames(x2),cex=1)
+text(nc[,1],nc[,2],label=rownames(x2),cex=.7)
+dev.off()
+
+# Heatmap
+
+# MAplot
+
+# RankedListFor GSEA
+
+# Significant Results ordered by log2FC
+
+#######################################################################################################################
+# 2) CD41+ UNTR VS CD41- TRTD
+# DESEQ2
+
+# Volcano
+
+# Heatmap
+
+# MAplot
+
+# RankedListFor GSEA
+
+# Significant Results ordered by log2FC
+
+#######################################################################################################################
+# 3) CD41+ UNTR VS CD41+ TRTD
+# DESEQ2
+
+# Volcano
+
+# Heatmap
+
+# MAplot
+
+# RankedListFor GSEA
+
+# Significant Results ordered by log2FC
+
+#######################################################################################################################
+# 4) CD41- UNTR VS CD41- TRTD
+# DESEQ2
+
+# Volcano
+
+# Heatmap
+
+# MAplot
+
+# RankedListFor GSEA
+
+# Significant Results ordered by log2FC
+
+#######################################################################################################################
+# 5) CD41+ VS CD41- Controlled by Treatment
+# DESEQ2
+
+# Volcano
+
+# Heatmap
+
+# MAplot
+
+# RankedListFor GSEA
+
+# Significant Results ordered by log2FC
+
+#######################################################################################################################
+# 6) UNTR VS TRTD Controlled by CD41 status
+# DESEQ2
+
+# Volcano
+
+# Heatmap
+
+# MAplot
+
+# RankedListFor GSEA
+
+# Significant Results ordered by log2FC
+
