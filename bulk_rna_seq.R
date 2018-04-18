@@ -276,6 +276,7 @@ dev.off()
 #################################################################################################
 
 countData=readRDS("ayako_bulk_rna_counts.rds")
+
 library(Rsubread)
 options(scipen=999)
 library(DESeq2)
@@ -296,11 +297,22 @@ dLRT <- DESeqDataSetFromMatrix(countData = countData, colData = design, design =
 dLRT <- DESeq(dLRT, test="LRT", reduced=~1)
 dLRT_vsd <- varianceStabilizingTransformation(dLRT)
 vsd = assay(dLRT_vsd)
+saveRDS(vsd,"vsd_bulk_ayako.rds")
 dLRT_res = results(dLRT)
+saveRDS(dLRT_res,"dLRT_res_bulk_ayako.rds")
 
-pdf("test.pdf")
+vsd = readRDS("vsd_bulk_ayako.rds")
+dLRT_res = readRDS("dLRT_res_bulk_ayako.rds")
+
+
+png("test2.png")
 sig_vsd = vsd[which(dLRT_res$padj<0.05),]
-colors <- colorRampPalette(c("blue","white","red"))(45)
-heatmap.2(sig_vsd,col=colors,scale="row", trace="none",distfun = function(x) get_dist(x,method="spearman"),srtCol=25,
-labRow = FALSE,xlab="", ylab="Genes",key.title="Gene expression")
+colnames(sig_vsd) <- c("CD41-_Ctrl","CD41-_Ctrl","CD41-_Ctrl",
+                      "CD41+_Ctrl","CD41+_Ctrl","CD41+_Ctrl",
+                      "CD41-_Thpo","CD41-_Thpo","CD41-_Thpo",
+                      "CD41+_Thpo","CD41+_Thpo","CD41+_Thpo")
+colors <- colorRampPalette( (brewer.pal(9, "RdBu")) )(20)
+heatmap.2(sig_vsd,col=colors,scale="row", trace="none",distfun = function(x) get_dist(x,method="pearson"),srtCol=90,
+labRow = FALSE,xlab="", ylab="Genes",key.title="Gene expression",cexCol=.7)
 dev.off()
+
