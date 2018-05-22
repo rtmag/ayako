@@ -341,6 +341,8 @@ dds <- DESeqDataSetFromMatrix(countData = countData[,1:6], colData = design, des
 dds <- DESeq(dds)
 dds_res = results(dds,contrast=c("group","Ctrl_CD41plus","Ctrl_CD41minus"))
 
+write.csv(dds_res[order(dds_res$log2FoldChange),],"1_CD41+_untr_VS_CD41-_untr_differentially_expressed_analysis_table.csv")
+
 # Volcano
 
 pdf("1_CD41+_untr_VS_CD41-_untr/volcano.pdf")
@@ -425,6 +427,8 @@ dds <- DESeqDataSetFromMatrix(countData = countData[,7:12], colData = design, de
 dds <- DESeq(dds)
 dds_res = results(dds,contrast=c("group","Thpo_CD41plus","Thpo_CD41minus"))
 
+write.csv(dds_res[order(dds_res$log2FoldChange),],"2_CD41+_tr_VS_CD41-_tr_differentially_expressed_analysis_table.csv")
+
 # Volcano
 
 pdf("2_CD41+_tr_VS_CD41-_tr/volcano.pdf")
@@ -508,6 +512,9 @@ design<-data.frame(group=c("Ctrl_CD41plus","Ctrl_CD41plus","Ctrl_CD41plus",
 dds <- DESeqDataSetFromMatrix(countData = countData[,c(4:6,10:12)], colData = design, design = ~ group )
 dds <- DESeq(dds)
 dds_res = results(dds,contrast=c("group","Ctrl_CD41plus","Thpo_CD41plus"))
+
+write.csv(dds_res[order(dds_res$log2FoldChange),],"3_CD41+_untr_VS_CD41+_tr_differentially_expressed_analysis_table.csv")
+
 # Volcano
 
 pdf("3_CD41+_untr_VS_CD41+_tr/volcano.pdf")
@@ -590,6 +597,9 @@ design<-data.frame(group=c("Ctrl_CD41minus","Ctrl_CD41minus","Ctrl_CD41minus",
 dds <- DESeqDataSetFromMatrix(countData = countData[,c(1:3,7:9)], colData = design, design = ~ group )
 dds <- DESeq(dds)
 dds_res = results(dds,contrast=c("group","Ctrl_CD41minus","Thpo_CD41minus"))
+
+write.csv(dds_res[order(dds_res$log2FoldChange),],"4_CD41-_untr_VS_CD41-_tr_differentially_expressed_analysis_table.csv")
+
 # Volcano
 
 pdf("4_CD41-_untr_VS_CD41-_tr/volcano.pdf")
@@ -682,6 +692,8 @@ dds <- DESeq(dds, test="LRT",
            full= ~ Treatment + CD41, 
            reduced= ~ Treatment )
 dds_res <- results(dds,contrast=c("CD41","CD41plus","CD41minus"))
+
+write.csv(dds_res[order(dds_res$log2FoldChange),],"5_CD41+_VS_CD41-_ControlledByTreatment_differentially_expressed_analysis_table.csv")
 
 # Volcano
 
@@ -778,6 +790,9 @@ dds <- DESeq(dds, test="LRT",
            full= ~ CD41 + Treatment, 
            reduced= ~ CD41 )
 dds_res <- results(dds,contrast=c("Treatment","Ctrl","Thpo"))
+
+write.csv(dds_res[order(dds_res$log2FoldChange),],"6_untr_VS_tr_ControlledByCD41Status_differentially_expressed_analysis_table.csv")
+
 
 # Volcano
 
