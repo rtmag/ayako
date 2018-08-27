@@ -132,7 +132,7 @@ dds_res = results(dds,contrast=c("group","Ctrl_CD41plus","Thpo_CD41plus"))
 
 # Volcano
 
-pdf("3_CD41+_untr_VS_CD41+_tr/volcano_labels.pdf")
+pdf("3_CD41+_untr_VS_CD41+_tr_volcano_labels.pdf")
 plot(dds_res$log2FoldChange,-log10(dds_res$padj),xlab=expression('Log'[2]*' Fold Change ( CD41+ Untreated / CD41+ Treated )'),
               ylab=expression('-Log'[10]*' Q-values'),col=alpha("grey",.5),pch=20)
 abline(v=-1,lty = 2,col="grey")
@@ -172,7 +172,7 @@ dds_res = results(dds,contrast=c("group","Ctrl_CD41minus","Thpo_CD41minus"))
 # Volcano
 
 
-pdf("4_CD41-_untr_VS_CD41-_tr/volcano_labels.pdf")
+pdf("4_CD41-_untr_VS_CD41-_tr_volcano_labels.pdf")
 plot(dds_res$log2FoldChange,-log10(dds_res$padj),xlab=expression('Log'[2]*' Fold Change ( CD41- Untreated / CD41- Treated )'),
               ylab=expression('-Log'[10]*' Q-values'),col=alpha("grey",.5),pch=20)
 abline(v=-1,lty = 2,col="grey")
@@ -220,7 +220,7 @@ dds_res <- results(dds,contrast=c("CD41","CD41plus","CD41minus"))
 
 # Volcano
 
-pdf("5_CD41+_VS_CD41-_ControlledByTreatment/volcano_labels.pdf")
+pdf("5_CD41+_VS_CD41-_ControlledByTreatment_volcano_labels.pdf")
 plot(dds_res$log2FoldChange,-log10(dds_res$padj),xlab=expression('Log'[2]*' Fold Change ( CD41+ / CD41- )'),
               ylab=expression('-Log'[10]*' Q-values'),col=alpha("grey",.5),pch=20)
 abline(v=-1,lty = 2,col="grey")
@@ -269,7 +269,7 @@ dds_res <- results(dds,contrast=c("Treatment","Ctrl","Thpo"))
 
 # Volcano
 
-pdf("6_untr_VS_tr_ControlledByCD41Status/volcano_labels.pdf")
+pdf("6_untr_VS_tr_ControlledByCD41Status_volcano_labels.pdf")
 plot(dds_res$log2FoldChange,-log10(dds_res$padj),xlab=expression('Log'[2]*' Fold Change ( Ctrl / Thpo )'),
               ylab=expression('-Log'[10]*' Q-values'),col=alpha("grey",.5),pch=20)
 abline(v=-1,lty = 2,col="grey")
