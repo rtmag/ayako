@@ -294,3 +294,16 @@ nc=wordlayout(x2$log2FoldChange,-log10(x2$padj),rownames(x2),cex=1)
 text(nc[,1],nc[,2],label=rownames(x2),cex=.7)
 legend("left", c("HR","NHEJ"),fill=c("red","blue"), bty="n") 
 dev.off()
+####################################
+pdf("heatmap_genes_interest_HR_NHEJ.pdf")
+vsd = readRDS("vsd_bulk_ayako.rds")
+sig_vsd = vsd[(rownames(dds_res) %in% NHEJ) | (rownames(dds_res) %in% HR),]
+rownames(sig_vsd) =rownames(dds_res)[(rownames(dds_res) %in% NHEJ) | (rownames(dds_res) %in% HR)]
+colnames(sig_vsd) <- c("CD41-_Ctrl","CD41-_Ctrl","CD41-_Ctrl",
+                      "CD41+_Ctrl","CD41+_Ctrl","CD41+_Ctrl",
+                      "CD41-_Thpo","CD41-_Thpo","CD41-_Thpo",
+                      "CD41+_Thpo","CD41+_Thpo","CD41+_Thpo")
+colors <- rev(colorRampPalette( (brewer.pal(9, "RdBu")) )(20))
+heatmap.2(sig_vsd,col=colors,scale="row", trace="none",distfun = function(x) get_dist(x,method="pearson"),srtCol=90,
+          xlab="", ylab="",key.title="Gene expression",cexCol=.8)
+dev.off()
