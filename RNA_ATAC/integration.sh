@@ -11,9 +11,9 @@ x = x[,1]
 bed_m = bed[match(x, bed[,4]),]
 write.table(bed_m,"gencode.vM15_tss_RNASEQ.bed",sep="\t",quote=F,col.names=F,row.names=F)
 ############################################################################################################################
-more /root/ayako/ref/gencode.vM15_tss_RNASEQ.bed|awk -F"\t" '{print $1"\t"$2-500"\t"$2+500}'|grep -v "-" > m15_1kb_aroundTSS.bed
-more /root/ayako/ref/gencode.vM15_tss_RNASEQ.bed|awk -F"\t" '{print $1"\t"$2-1000"\t"$2+1000}'|grep -v "-" > m15_2kb_aroundTSS.bed
-more /root/ayako/ref/gencode.vM15_tss_RNASEQ.bed|awk -F"\t" '{print $1"\t"$2-2000"\t"$2+2000}'|grep -v "-" > m15_4kb_aroundTSS.bed
+more /root/ayako/ref/gencode.vM15_tss_RNASEQ.bed|awk -F"\t" '{print $1"\t"$2-500"\t"$2+500}'|perl -pe 's/\t\-\d+\t/\t1\t/g' > m15_1kb_aroundTSS.bed
+more /root/ayako/ref/gencode.vM15_tss_RNASEQ.bed|awk -F"\t" '{print $1"\t"$2-1000"\t"$2+1000}'|perl -pe 's/\t\-\d+\t/\t1\t/g' > m15_2kb_aroundTSS.bed
+more /root/ayako/ref/gencode.vM15_tss_RNASEQ.bed|awk -F"\t" '{print $1"\t"$2-2000"\t"$2+2000}'|perl -pe 's/\t\-\d+\t/\t1\t/g' > m15_4kb_aroundTSS.bed
 
 
 computeMatrix scale-regions \
