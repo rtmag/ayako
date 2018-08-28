@@ -34,7 +34,10 @@ colnames(dat)<-c("Ctrl_CD41minus1","Ctrl_CD41minus2","Ctrl_CD41minus3","Ctrl_CD4
 x <- DGEList(counts=data$counts, genes=data$annotation[,c("GeneID","Length")])
 x_rpkm <- rpkm(x,x$genes$Length)
 
-colnames(x_rpkm)=c("ActD","DMSO","DRB")
+colnames(x_rpkm)=c("Ctrl_CD41minus1","Ctrl_CD41minus2","Ctrl_CD41minus3","Ctrl_CD41plus1","Ctrl_CD41plus2","Ctrl_CD41plus3",
+                 "Thpo_CD41minus1","Thpo_CD41minus2","Thpo_CD41minus3","Thpo_CD41plus1","Thpo_CD41plus2","Thpo_CD41plus3",
+                 "Ctrl_neg")
 
-write.table(x_rpkm, "rpkm_wt_hl-60_all.txt",sep="\t",col.names=T,row.names=T,quote=F)
-write.csv(x_rpkm, "rpkm_wt_hl-60_all.csv")
+saveRDS(x_rpkm,"ayako_rpkm.rds")
+write.table(x_rpkm, "rpkm_ayako.txt",sep="\t",col.names=T,row.names=T,quote=F)
+write.csv(x_rpkm, "rpkm_ayako.csv")
