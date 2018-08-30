@@ -54,3 +54,45 @@ computeMatrix scale-regions \
 /root/ayako/ayako_dejavu/bw/CD41-_untr_2.bw \
 -R m15_4kb_aroundTSS.bed  \
 --sortRegions descend -bs 1 -m 1 -p max -out m15_4kb_aroundTSS.mat --outFileNameMatrix m15_4kb_aroundTSS.txt
+
+##################################################################################################################
+computeMatrix scale-regions \
+-S /root/ayako/ayako_dejavu/bw/CD41+_tr_1.bw \
+/root/ayako/ayako_dejavu/bw/CD41+_tr_2.bw \
+/root/ayako/ayako_dejavu/bw/CD41+_untr_1.bw \
+/root/ayako/ayako_dejavu/bw/CD41+_untr_2.bw \
+/root/ayako/ayako_dejavu/bw/CD41+_untr_3.bw \
+/root/ayako/ayako_dejavu/bw/CD41-_tr_1.bw \
+/root/ayako/ayako_dejavu/bw/CD41-_tr_2.bw \
+/root/ayako/ayako_dejavu/bw/CD41-_untr_1.bw \
+/root/ayako/ayako_dejavu/bw/CD41-_untr_2.bw \
+-R m15_1kb_aroundTSS.bed --averageTypeBins sum \
+--sortRegions descend -bs 1 -m 1 -p max -out m15_1kb_aroundTSS.mat --outFileNameMatrix m15_1kb_aroundTSS_sum.txt
+
+computeMatrix scale-regions \
+-S /root/ayako/ayako_dejavu/bw/CD41+_tr_1.bw \
+/root/ayako/ayako_dejavu/bw/CD41+_tr_2.bw \
+/root/ayako/ayako_dejavu/bw/CD41+_untr_1.bw \
+/root/ayako/ayako_dejavu/bw/CD41+_untr_2.bw \
+/root/ayako/ayako_dejavu/bw/CD41+_untr_3.bw \
+/root/ayako/ayako_dejavu/bw/CD41-_tr_1.bw \
+/root/ayako/ayako_dejavu/bw/CD41-_tr_2.bw \
+/root/ayako/ayako_dejavu/bw/CD41-_untr_1.bw \
+/root/ayako/ayako_dejavu/bw/CD41-_untr_2.bw \
+-R m15_2kb_aroundTSS.bed --averageTypeBins sum \
+--sortRegions descend -bs 1 -m 1 -p max -out m15_2kb_aroundTSS.mat --outFileNameMatrix m15_2kb_aroundTSS_sum.txt
+
+computeMatrix scale-regions \
+-S /root/ayako/ayako_dejavu/bw/CD41+_tr_1.bw \
+/root/ayako/ayako_dejavu/bw/CD41+_tr_2.bw \
+/root/ayako/ayako_dejavu/bw/CD41+_untr_1.bw \
+/root/ayako/ayako_dejavu/bw/CD41+_untr_2.bw \
+/root/ayako/ayako_dejavu/bw/CD41+_untr_3.bw \
+/root/ayako/ayako_dejavu/bw/CD41-_tr_1.bw \
+/root/ayako/ayako_dejavu/bw/CD41-_tr_2.bw \
+/root/ayako/ayako_dejavu/bw/CD41-_untr_1.bw \
+/root/ayako/ayako_dejavu/bw/CD41-_untr_2.bw \
+-R m15_4kb_aroundTSS.bed --averageTypeBins sum \
+--sortRegions descend -bs 1 -m 1 -p max -out m15_4kb_aroundTSS.mat --outFileNameMatrix m15_4kb_aroundTSS_sum.txt
+
+
