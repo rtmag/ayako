@@ -94,5 +94,9 @@ computeMatrix scale-regions \
 /root/ayako/ayako_dejavu/bw/CD41-_untr_2.bw \
 -R m15_4kb_aroundTSS.bed --averageTypeBins sum \
 --sortRegions descend -bs 1 -m 1 -p max -out m15_4kb_aroundTSS.mat --outFileNameMatrix m15_4kb_aroundTSS_sum.txt
+#####################
+
+
+
 
 
