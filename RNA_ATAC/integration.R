@@ -90,21 +90,25 @@ colnames(atac) = c("plus_tr_1","plus_tr_2","plus_untr_1","plus_untr_2","plus_unt
 
 par(mfrow=c(3,3))
 # plus_tr_1
-smoothScatter(asinh(atac[,1]),rna_plus_tr,nrpoints=0,xlab="RNA-Seq CD41+ treated",ylab="ATAC-Seq TSS CD41+ treated 1")
+smoothScatter(rna_plus_tr,asinh(atac[,1]),nrpoints=0,xlab="RNA-Seq CD41+ treated",ylab="ATAC-Seq TSS CD41+ treated 1")
 # plus_tr_2
-smoothScatter(asinh(atac[,2]),rna_plus_tr,nrpoints=0,xlab="RNA-Seq CD41+ treated",ylab="ATAC-Seq TSS CD41+ treated 2")
+smoothScatter(rna_plus_tr,asinh(atac[,2]),nrpoints=0,xlab="RNA-Seq CD41+ treated",ylab="ATAC-Seq TSS CD41+ treated 2")
 # plus_untr_1
-smoothScatter(asinh(atac[,3]),rna_plus_untr,nrpoints=0,xlab="RNA-Seq CD41+ untreated",ylab="ATAC-Seq TSS CD41+ untreated 1")
+smoothScatter(rna_plus_untr,asinh(atac[,3]),nrpoints=0,xlab="RNA-Seq CD41+ untreated",ylab="ATAC-Seq TSS CD41+ untreated 1")
 # plus_untr_2
-smoothScatter(asinh(atac[,4]),rna_plus_untr,nrpoints=0,xlab="RNA-Seq CD41+ untreated",ylab="ATAC-Seq TSS CD41+ untreated 2")
+smoothScatter(rna_plus_untr,asinh(atac[,4]),nrpoints=0,xlab="RNA-Seq CD41+ untreated",ylab="ATAC-Seq TSS CD41+ untreated 2")
 # plus_untr_3
-smoothScatter(asinh(atac[,5]),rna_plus_untr,nrpoints=0,xlab="RNA-Seq CD41+ untreated",ylab="ATAC-Seq TSS CD41+ untreated 3")
+smoothScatter(rna_plus_untr,asinh(atac[,5]),nrpoints=0,xlab="RNA-Seq CD41+ untreated",ylab="ATAC-Seq TSS CD41+ untreated 3")
 # neg_tr_1
-smoothScatter(asinh(atac[,6]),rna_neg_tr,nrpoints=0,xlab="RNA-Seq CD41- treated",ylab="ATAC-Seq TSS CD41- treated 1")
+smoothScatter(rna_neg_tr,asinh(atac[,6]),nrpoints=0,xlab="RNA-Seq CD41- treated",ylab="ATAC-Seq TSS CD41- treated 1")
 # neg_tr_2
-smoothScatter(asinh(atac[,7]),rna_neg_tr,nrpoints=0,xlab="RNA-Seq CD41- treated",ylab="ATAC-Seq TSS CD41- treated 2")
+smoothScatter(rna_neg_tr,asinh(atac[,7]),nrpoints=0,xlab="RNA-Seq CD41- treated",ylab="ATAC-Seq TSS CD41- treated 2")
 # neg_untr_1
-smoothScatter(asinh(atac[,8]),rna_neg_untr,nrpoints=0,xlab="RNA-Seq CD41- untreated",ylab="ATAC-Seq TSS CD41- untreated 1")
+smoothScatter(rna_neg_untr,asinh(atac[,8]),nrpoints=0,xlab="RNA-Seq CD41- untreated",ylab="ATAC-Seq TSS CD41- untreated 1")
 # neg_untr_2
-smoothScatter(asinh(atac[,9]),rna_neg_untr,nrpoints=0,ylab="RNA-Seq CD41- untreated",xlab="ATAC-Seq TSS CD41- untreated 2")
+smoothScatter(rna_neg_untr,asinh(atac[,9]),nrpoints=0,xlab="RNA-Seq CD41- untreated",ylab="ATAC-Seq TSS CD41- untreated 2")
 dev.off()
+
+
+smoothScatter(rna_neg_untr[rna_neg_untr>1],asinh(atac[rna_neg_untr>1,9]),nrpoints=0,xlab="RNA-Seq CD41- untreated",ylab="ATAC-Seq TSS CD41- untreated 2")
+
